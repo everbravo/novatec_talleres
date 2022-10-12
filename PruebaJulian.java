@@ -23,6 +23,52 @@ public class Testeo {
 		
 		List<Cliente> listaCliente2 = new ArrayList<>();
 		
+		List<Cliente> listaCliente5 = new ArrayList<>();
+		
+		listaCliente.add(new Cliente("Yeison", 123456, 5000D));
+		listaCliente.add(new Cliente("Julian", 032413, 10000D));
+		listaCliente.add(new Cliente("Ever", 352322, 6000D));
+		listaCliente.add(new Cliente("Maria", 23645, 43000D));
+		listaCliente.add(new Cliente("Alejandra", 573212, 51000D));
+		listaCliente.add(new Cliente("Diana", 12334, 2000D));
+		listaCliente.add(new Cliente("Juliana", 4675787, 1000D));
+		listaCliente.add(new Cliente("Eugenia", 2355, 1000D));
+		listaCliente.add(new Cliente("Juan", 5795645, 300D));
+		listaCliente.add(new Cliente("Yam", 9876, 500D));
+		listaCliente.add(new Cliente("Camilo", 5634, 800D));
+		listaCliente.add(new Cliente("Pedro", 143452, 23000D));
+		listaCliente.add(new Cliente("Jose", 4543, 6000D));
+		listaCliente.add(new Cliente("Fabian", 45676, 99000D));
+		listaCliente.add(new Cliente("Juan", 6462, 32000D));
+		listaCliente.add(new Cliente("Juancho", 12546356, 67000D));
+		listaCliente.add(new Cliente("Jesus", 98976, 32000D));
+		listaCliente.add(new Cliente("Merlis", 134451, 9000D));
+		listaCliente.add(new Cliente("Gloria", 88754, 8000D));
+		listaCliente.add(new Cliente("Desconocido", 57644, 7000D));
+		
+		List<Cliente> listaCliente4 = new ArrayList<>();
+		
+		listaCliente.add(new Cliente("Yeison", 123456, 5000D));
+		listaCliente.add(new Cliente("Julian", 032413, 10000D));
+		listaCliente.add(new Cliente("Ever", 352322, 6000D));
+		listaCliente.add(new Cliente("Maria", 23645, 43000D));
+		listaCliente.add(new Cliente("Alejandra", 573212, 51000D));
+		listaCliente.add(new Cliente("Diana", 12334, 2000D));
+		listaCliente.add(new Cliente("Juliana", 4675787, 1000D));
+		listaCliente.add(new Cliente("Eugenia", 2355, 1000D));
+		listaCliente.add(new Cliente("Juan", 5795645, 300D));
+		listaCliente.add(new Cliente("Yam", 9876, 500D));
+		listaCliente.add(new Cliente("Camilo", 5634, 800D));
+		listaCliente.add(new Cliente("Pedro", 143452, 23000D));
+		listaCliente.add(new Cliente("Jose", 4543, 6000D));
+		listaCliente.add(new Cliente("Fabian", 45676, 99000D));
+		listaCliente.add(new Cliente("Juan", 6462, 32000D));
+		listaCliente.add(new Cliente("Juancho", 12546356, 67000D));
+		listaCliente.add(new Cliente("Jesus", 98976, 32000D));
+		listaCliente.add(new Cliente("Merlis", 134451, 9000D));
+		listaCliente.add(new Cliente("Gloria", 88754, 8000D));
+		listaCliente.add(new Cliente("Desconocido", 57644, 7000D));
+		
 		
 		List<Cliente> listaCliente = new ArrayList<>();
 		
