@@ -10,7 +10,7 @@ import java.util.stream.DoubleStream;
 public class Testeo {
 
 	public static void main(String[] args) {
-		
+		//linea editada
 //		List<String> personas = new ArrayList<>();
 //		personas.add("hola");
 //		personas.add("como");
