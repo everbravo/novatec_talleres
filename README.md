@@ -13,4 +13,4 @@
 ### actividad1semillero 
 * Objetivo: Crear ejemplos de los métodos de las variables wrapper
 ### finalProject
-* Objetivo: Poner a prueba los conocimientos adquiridos durante la formacion
+* Objetivo: Poner a prueba los conocimientos adquiridos durante la formación
