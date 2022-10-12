@@ -1,0 +1,17 @@
+transaccion;fecha_transaccion;estado_transaccion;desc_transaccion;numero_cuenta;monto;
+1;2022-10-10;A;retiro de dinero;null;0.0;
+2;null;A;retiro de dinero;null;20.0;
+3;null;A;retiro de dinero;null;20.0;
+4;null;A;retiro de dinero;null;20.0;
+5;2022-10-10;A;retiro de dinero;null;20.0;
+6;2022-10-11;A;Retiro Exitoso;null;16.0;
+7;2022-10-11;A;Retiro Exitoso;null;16.0;
+8;2022-10-11;A;Ingreso de dinero;null;100.0;
+10;2022-10-11;A;Ingreso de dinero;8172659849;2000.0;
+11;2022-10-11;A;Retiro de dinero;8172659849;200.0;
+12;2022-10-11;A;Retiro de dinero;8172659849;1995.0;
+13;2022-10-11;A;Retiro de dinero;3071254531;95.0;
+14;2022-10-11;A;Ingreso de dinero;3071254531;100.0;
+15;2022-10-11;A;Ingreso de dinero;5789167775;200.0;
+16;2022-10-11;A;Retiro de dinero;5789167775;295.0;
+17;2022-10-11;A;Ingreso de dinero;5789167775;10.0;
