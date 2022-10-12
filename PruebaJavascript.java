@@ -3,8 +3,6 @@
 
 public class MatDama {
 
-	/** Mensaje de pruebas Javascript */
-
 	/*
 	 * Pasos para alcanzar la cima 1. Crear una matriz de ceros M 2. Generar numeros
 	 * aleatorios para M(fila, columna) 3. Marcar la posicion obtenida en el paso
