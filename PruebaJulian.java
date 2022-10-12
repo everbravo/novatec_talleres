@@ -1,243 +1,260 @@
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.stream.Collectors;
-import java.util.stream.DoubleStream;
 
-public class Testeo {
-	
-	
-	/** cambios realizados por Julian **/
+//import java.util.Random;
 
+public class MatDama {
+
+	/*
+	 * Pasos para alcanzar la cima 1. Crear una matriz de ceros M 2. Generar numeros
+	 * aleatorios para M(fila, columna) 3. Marcar la posicion obtenida en el paso
+	 * dos 4. verificar si es una posicion segura (linea fila y columna) 5.
+	 * verificar si la posicion es segura en sus diagonales 6. confirmar los cambios
+	 * a la matriz original
+	 */
+
+	// Generar rangos estaticos para aleatoriedad
+	protected final static int NMIN = 0;
+	protected final static int NMAX = 7;
+
+	// Generar tamaño estatico para el tamaño mxn en la matriz
+	protected final static int TAMANO = 8;
+	
+	// Establecer la catidad de reinas en el tablero
+	protected final static int CANTIDAD = 7;
+
+	
 	public static void main(String[] args) {
-		//linea editada
-//		List<String> personas = new ArrayList<>();
-//		personas.add("hola");
-//		personas.add("como");
-//		personas.add("estas");
-//		personas.add("?");
-//		
-//		personas.forEach(x->System.out.println(x));
-//		
-//		personas.forEach(System.out::println);
-		
-		List<Cliente> listaCliente2 = new ArrayList<>();
-		
-		
-		List<Cliente> listaCliente = new ArrayList<>();
-		
-		listaCliente.add(new Cliente("Yeison", 123456, 5000D));
-		listaCliente.add(new Cliente("Julian", 032413, 10000D));
-		listaCliente.add(new Cliente("Ever", 352322, 6000D));
-		listaCliente.add(new Cliente("Maria", 23645, 43000D));
-		listaCliente.add(new Cliente("Alejandra", 573212, 51000D));
-		listaCliente.add(new Cliente("Diana", 12334, 2000D));
-		listaCliente.add(new Cliente("Juliana", 4675787, 1000D));
-		listaCliente.add(new Cliente("Eugenia", 2355, 1000D));
-		listaCliente.add(new Cliente("Juan", 5795645, 300D));
-		listaCliente.add(new Cliente("Yam", 9876, 500D));
-		listaCliente.add(new Cliente("Camilo", 5634, 800D));
-		listaCliente.add(new Cliente("Pedro", 143452, 23000D));
-		listaCliente.add(new Cliente("Jose", 4543, 6000D));
-		listaCliente.add(new Cliente("Fabian", 45676, 99000D));
-		listaCliente.add(new Cliente("Juan", 6462, 32000D));
-		listaCliente.add(new Cliente("Juancho", 12546356, 67000D));
-		listaCliente.add(new Cliente("Jesus", 98976, 32000D));
-		listaCliente.add(new Cliente("Merlis", 134451, 9000D));
-		listaCliente.add(new Cliente("Gloria", 88754, 8000D));
-		listaCliente.add(new Cliente("Desconocido", 57644, 7000D));
-		
-		System.out.println("***********************************LIST***********************************");
-		
-		listaCliente.stream().sorted(Comparator.comparing(Cliente::getNombre)).forEach(System.out::println);
-		System.out.println("Total acumulado: "+listaCliente.stream().flatMapToDouble(p->DoubleStream.of(p.getSaldo())).sum());
-		
-		Optional<Cliente> menorSaldo = getMenorSaldo(listaCliente);
-		if(menorSaldo.isPresent()) {
-			System.out.println("\nMenor Saldo");
-			System.out.println(menorSaldo);
-		}
-		
-		Optional<Cliente> mayorSaldo = getMayorSaldo(listaCliente);
-		if(mayorSaldo.isPresent()) {
-			System.out.println("\nMayor Saldo");
-			System.out.println(mayorSaldo);
-		}
-		
-		System.out.println("\nLista Ordenada A-Z");
-		 getSortedNamesAZ(listaCliente).stream().forEach(x->System.out.println(x));
-		
-		 System.out.println("\nLista Ordenada Z-A");
-		 getSortedNames(listaCliente).stream().forEach(x->System.out.println(x));
-		 
-		 System.out.println("\n Personas con saldo mayor a 10.000 - filter");
-		 listaCliente.stream().filter(y -> y.getSaldo() > 10000).forEach(x -> System.out.println(x));
 
-		 System.out.println("\n Personas con saldo menor a 10.000 - filter");
-		 listaCliente.stream().filter(y -> y.getSaldo() < 10000).forEach(x -> System.out.println(x));
-		 
-		 System.out.println("\n en la lista de cliente existen personas sin saldo?");
-		 System.out.println(listaCliente.stream().allMatch(y -> y.getSaldo() == null || y.getSaldo() == 0D));
+		int[][] matrizOriginal = crearMatriz();
+		int[][] matrizCopia = agregarReina(matrizOriginal);
 		
-		 System.out.println("\n todas las personas de la lista de cliente tienen saldo?");
-		 System.out.println(listaCliente.stream().allMatch(y -> y.getSaldo() != null || y.getSaldo() != 0D));
-		 
-		 System.out.println("\n collect");
-		 System.out.println(listaCliente.stream().collect(Collectors.toList()));
-		 
-		 System.out.println("\n convertir de minusculas a mayusculas los nombres de la lista");
-		 listaCliente.stream().map(e -> e.getNombre().toUpperCase()).forEach(j -> System.out.print(j+"\t"));
-		 
-		 System.out.println("acumulado: "+listaCliente.stream()
-				 .peek(d->System.out.println("Op 1. "+d))
-				 .filter(f -> f.getSaldo() > 20000D)
-				 .peek(x -> System.out.println("Op 2. "+x))
-				 .flatMapToDouble(d -> DoubleStream.of(d.getSaldo()))
-				 .sum());
-		 
-		 System.out.println(listaCliente.stream().peek(s->s.setNombre(s.getNombre().toUpperCase())).distinct().collect(Collectors.toList()));
-		 
-		 System.out.println("Sort by field");
-		 listaCliente.stream().sorted((s1,s2)->s1.getNombre().compareTo(s2.getNombre())).forEach(c -> System.out.println(c));
-		 
-		 System.out.println("Saldo Max reduce");
-		 System.out.println(listaCliente.stream().reduce(Cliente::saldoMax).get());
-		 
-		 System.out.println("Skip");
-		 System.out.println(listaCliente.stream().sorted((s1,s2)->s1.getNombre().compareTo(s2.getNombre())).skip(3).collect(Collectors.toList()));
-		 
-		 System.out.println("***********************************MAP***********************************");
-		 
-		 	Map<String, Cliente> mapaCliente = new HashMap<>();
-			
-		 	mapaCliente.put("Yeison", new Cliente("Yeison", 123456, 5000D));
-		 	mapaCliente.put("Julian", new Cliente("Julian", 032413, 10000D));
-		 	mapaCliente.put("Ever", new Cliente("Ever", 352322, 6000D));
-		 	mapaCliente.put("Maria", new Cliente("Maria", 23645, 43000D));
-		 	mapaCliente.put("Alejandra", new Cliente("Alejandra", 573212, 51000D));
-		 	mapaCliente.put("Diana", new Cliente("Diana", 12334, 2000D));
-		 	mapaCliente.put("Juliana", new Cliente("Juliana", 4675787, 1000D));
-		 	
-		 	mapaCliente.entrySet().stream().filter(d -> d.getValue().getSaldo() > 10000D).forEach(x -> System.out.println(x.getValue()));
-		 	
-		 	// el comportamiento del stream en Map no es nativo y se debe convertir primero a una lista o conjunto, ahora bien, para este ejercicio
-		 	// se utiliza entrySet() y accesar a los datos mediante las key's o values del objeto Map
-		
-		 	System.out.println("acumulado: "+mapaCliente.entrySet().stream()
-			 .peek(d->System.out.println("Op 1. "+d))
-			 .filter(f -> f.getValue().getSaldo() > 20000D)
-			 .peek(x -> System.out.println("Op 2. "+x))
-			 .flatMapToDouble(d -> DoubleStream.of(d.getValue().getSaldo()))
-			 .sum());
-		 	
-		 	 System.out.println("\n Personas con saldo menor a 10.000 - filter");
-		 	mapaCliente.entrySet().stream().filter(y -> y.getValue().getSaldo() < 10000).forEach(x -> System.out.println(x));
-			 
-			 System.out.println("\n en la lista de cliente existen personas sin saldo?");
-			 System.out.println(mapaCliente.entrySet().stream().allMatch(y -> y.getValue().getSaldo() == null || y.getValue().getSaldo() == 0D));
-			
-			 System.out.println("\n todas las personas de la lista de cliente tienen saldo?");
-			 System.out.println(mapaCliente.entrySet().stream().allMatch(y -> y.getValue().getSaldo() != null || y.getValue().getSaldo() != 0D));
-			 
-			 System.out.println("\n collect");
-			 System.out.println(mapaCliente.entrySet().stream().collect(Collectors.toList()));
-			 
-			 System.out.println("\n convertir de minusculas a mayusculas los nombres de la lista");
-			 mapaCliente.entrySet().stream().map(e -> e.getValue().getNombre().toUpperCase()).forEach(j -> System.out.print(j+"\t"));
-			 
-			 System.out.println("\n convertir de minusculas a mayusculas los nombres de la lista");
-			 mapaCliente.entrySet().stream().map(e -> e.getValue().getNombre().toUpperCase()).forEach(j -> System.out.print(j+"\t"));
-		 	
-		
+		imprimirMatriz(matrizCopia);
+
 	}
 	
-	public static class Cliente{
+	public static int[][] agregarReina(int[][] mtzc) {
 		
-		private String nombre;
-		private Integer documento;
-		private Double saldo;
-		
-		public Cliente() {
-			super();
+		int[][] mtzc2 = new int[TAMANO][TAMANO];
+		for (int h = 1; h <= CANTIDAD; h++) {
+			
+			System.out.println("\n***************** Agregando a la reina N° -> "+h+"******************\n");
+			
+			int fila = numeroRamdom();
+			int columna = numeroRamdom();
+			
+			
+			
+			boolean g = false;
+			
+				while(!g) {
+					System.out.println("Comprobando la seguridad en la fila:| " + fila + " | columna:| " + columna+" |");
+					g = comprobarSeguridad(mtzc, fila, columna);
+					//System.out.println(g+"\n");
+					if(g) { 
+						System.out.println("------------- Las ubicaciones son *Seguras* --------------\n");
+						mtzc2 = rellenarMatriz(mtzc, fila, columna);
+					}else {
+						System.out.println("En la ubicación Fila:| "+fila+" | Columna:| "+columna+" | la reina queda en peligro.\n Buscando una nueva posición...\n");
+						fila = numeroRamdom();
+						columna = numeroRamdom();
+					}
+					
+				}
+			
 		}
 		
-		public Cliente(String nombre, Integer documento, Double saldo) {
-			super();
-			this.nombre = nombre;
-			this.documento = documento;
-			this.saldo = saldo;
-		}
-		
-		public String getNombre() {
-			return nombre;
-		}
-		public void setNombre(String nombre) {
-			this.nombre = nombre;
-		}
-		public Integer getDocumento() {
-			return documento;
-		}
-		public void setDocumento(Integer documento) {
-			this.documento = documento;
-		}
-		public Double getSaldo() {
-			return saldo;
-		}
-		public void setSaldo(Double saldo) {
-			this.saldo = saldo;
-		}
+		return mtzc2;
+	}
+	
 
-		@Override
-		public String toString() {
-			return "nombre=" + nombre + ", documento=" + documento + ", saldo=" + saldo ;
+	public static int numeroRamdom() {
+		int numero = NMIN + (int) (Math.random() * ((NMAX - NMIN) + 1));
+		return numero;
+	}
+
+	public static int[][] crearMatriz() {
+
+		int[][] matz = new int[10][10];
+		for (int i = 0; i < TAMANO; i++) {
+			for (int k = 0; k < TAMANO; k++) {
+				matz[i][k] = 0;
+			}
 		}
-		
-		public static Cliente saldoMax(Cliente x, Cliente y) {
-			return x.getSaldo() > y.getSaldo() ? x : y;
+		return matz;
+	}
+
+	public static int[][] rellenarMatriz(int[][] matz, int f, int c) {
+		matz[f][c] = 1;
+		// descomentar para ver las iteraciones
+		//imprimirMatriz(matz);
+		return matz;
+	}
+
+	public static void imprimirMatriz(int[][] matz) {
+
+		for (int i = 0; i < TAMANO; i++) {
+			for (int k = 0; k < TAMANO; k++) {
+				System.out.print(" | " + matz[i][k]);
+				if (k == TAMANO-1) System.out.print(" |");
+			}
+			System.out.println();
 		}
 	}
 	
-	
-	
-	public static Optional<Cliente> getMenorSaldo(List<Cliente> listaCliente){
-		
-		for (Cliente cl: listaCliente) {
-			if(cl.getSaldo()<=300) {
-				return Optional.of(cl);
+	public static boolean filaaSegura(int[][] mtzc, int fila, int col) {
+		for (int f = 0; f < TAMANO; f++) {
+			//System.out.println("Hola "+mtzc[fila][f]);
+			if (mtzc[fila][f] == 1) {
+				return false;
 			}
 		}
 		
-		return Optional.empty();
+		return true;
 	}
 	
-	public static Optional<Cliente> getMayorSaldo(List<Cliente> listaCliente){
+	public static boolean columnaSegura(int[][] mtzc, int col, int fil) {
 		
-		Cliente aux = new Cliente(null, null, 0D);
+		//System.out.println("> F: "+fil+" C: "+col);
 		
-		for (Cliente cl: listaCliente) {
-			aux = (cl.getSaldo() > aux.getSaldo())? cl: aux;
+		for (int c = 0; c < TAMANO; c++) {
+			//System.out.println("----> "+mtzc[c][col]);
+			if (mtzc[c][col] == 1) {
+				return false;
+			}
+		}
+		return true;
+	}
+	
+	
+	public static boolean diagonalSuperiorIzquierdaSegura(int[][] mtzc, int fila, int col) {
+		int c = col;
+		int f = fila;
+
+		//System.out.println("Diagonal superior --> F: "+f+" C: "+c);
+		
+		int cDecremento = (c>0)?--c:c;
+		int fDecremento = (f>0)?--f:f;
+		if (cDecremento > 0 && fDecremento > 0) {
+			
+			for (;f>=0 && c>=0; f--, c--) {
+				//System.out.println("Valor c -> "+c+" Valor f -> "+f);
+				if (mtzc[f][c] == 1) {
+					return false;
+				}
+			}
+			
+		}else {
+			if (mtzc[fDecremento][cDecremento] == 1) {
+				return false;
+			}
 		}
 		
-		return Optional.of(aux);
+		return true;
 	}
 	
-	public static List<Cliente> getSortedNamesAZ(List<Cliente> listaCliente){
+	public static int aumentarPosicion(int pos, int tam) {
+		if(pos<tam) {
+			return ++pos;
+		}else {
+			return pos;
+		}
+	}
+	
+	public static int disminuirPosicion(int pos) {
+		if(pos>0) {
+			return --pos;
+		}else {
+			return pos;
+		}
+	}
+	
+	
+	public static boolean diagonalInferiorIzquierdaSegura(int[][] mtzc, int fila, int col) {
+		int c = col;
+		int f = fila;
+		//System.out.println("Diagonal Inferior --> F: "+f+" C: "+c);
 		
-		List<Cliente> clientesOredenados = listaCliente.stream().sorted((l1,l2)->l1.getNombre().compareTo(l2.getNombre())).collect(Collectors.toList());
-				
-		return clientesOredenados;
-	}
-	
-	public static List<Cliente> getSortedNames(List<Cliente> listaCliente){
+		int cDecremento = (c>=0)?c:--c;
+		int fIncremento = (f<TAMANO)?f:++f;
+		if (cDecremento > 0) {
+			
+			for (;f<TAMANO && c>=0; f++, c--) {
+				//System.out.println("Valor c -> "+c+" Valor f -> "+f);
+				if (mtzc[f][c] == 1) {
+					return false;
+				}
+			}
+			
+		}else {
+			if (mtzc[fIncremento][cDecremento] == 1) {
+				return false;
+			}
+		}
 		
-		List<Cliente> clientesOredenados = listaCliente.stream().sorted((l1,l2)->l2.getNombre().compareTo(l1.getNombre())).collect(Collectors.toList());
-				
-		return clientesOredenados;
+		return true;
 	}
 	
-	Optional<String> s = Optional.of("ever");
+	public static boolean diagonalInferiorDerechaSegura(int[][] mtzc, int fila, int col) {
+		int c = col;
+		int f = fila;
+		//System.out.println("Diagonal Inferior derecha --> F: "+f+" C: "+c);
+			
+			for (;f<TAMANO && c<TAMANO; f++, c++) {
+				//System.out.println("Valor c -> "+c+" Valor f -> "+f);
+				if (mtzc[f][c] == 1) {
+					return false;
+				}
+			}
+		
+		return true;
+	}
 	
+	public static boolean diagonalSuperiorDerechaSegura(int[][] mtzc, int fila, int col) {
+		int c = col;
+		int f = fila;
+		//System.out.println("Diagonal superior derecha --> F: "+f+" C: "+c);
+		
+		int cIncremento = (c<TAMANO)?c:++c;
+		int fDecremento = (f>=0)?f:--f;
+		if (cIncremento > 0) {
+			
+			for (;c<TAMANO && f>=0; c++, f--) {
+				//System.out.println("Valor c -> "+c+" Valor f -> "+f);
+				if (mtzc[f][c] == 1) {
+					return false;
+				}
+			}
+			
+		}else {
+			if (mtzc[fDecremento][cIncremento] == 1) {
+				return false;
+			}
+		}
+		
+		return true;
+	}
+	
+	public static boolean comprobarSeguridad(int[][] mtzc, int fila, int col) {
+		
+		boolean fSegura = filaaSegura(mtzc, fila, col);
+		boolean cSegura = columnaSegura(mtzc, col, fila);
+		boolean dsSegura = diagonalSuperiorIzquierdaSegura(mtzc, fila, col);
+		boolean diSegura = diagonalInferiorIzquierdaSegura(mtzc, fila, col);
+		boolean dsSupDSegura = diagonalInferiorDerechaSegura(mtzc, fila, col);
+		boolean dsSupIzSegura = diagonalSuperiorDerechaSegura(mtzc, fila, col);
+		
+		if (fSegura) System.out.println("|fila Segura|"); else System.out.println("|fila Peligrosa|") ;
+		if (cSegura) System.out.println("|columna Segura|"); else System.out.println("|columna Peligrosa|") ;
+		if (dsSegura) System.out.println("|diag sup izq Segura|"); else System.out.println("|diag sup izq Peligrosa|") ;
+		if (diSegura) System.out.println("|diag inf izq Segura|"); else System.out.println("|diag inf izq Peligrosa|") ;
+		if (dsSupDSegura) System.out.println("|diag sup der Segura|"); else System.out.println("|diag sup der Peligrosa|") ;
+		if (dsSupIzSegura) System.out.println("|diag sup der Segura|"); else System.out.println("|diag sup der Peligrosa|") ;
+		
+		if (fSegura && cSegura && dsSegura && diSegura && dsSupIzSegura && dsSupDSegura) {
+			return true;
+		}else {
+			return false;
+		}
+
+	}
+
 }
