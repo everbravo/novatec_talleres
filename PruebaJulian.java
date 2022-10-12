@@ -8,6 +8,9 @@ import java.util.stream.Collectors;
 import java.util.stream.DoubleStream;
 
 public class Testeo {
+	
+	
+	/** cambios realizados por Julian **/
 
 	public static void main(String[] args) {
 		
