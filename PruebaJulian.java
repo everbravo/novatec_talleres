@@ -13,7 +13,7 @@ public class Testeo {
 	/** cambios realizados por Julian **/
 
 	public static void main(String[] args) {
-		
+		//linea editada
 //		List<String> personas = new ArrayList<>();
 //		personas.add("hola");
 //		personas.add("como");
