@@ -205,7 +205,7 @@ public class ClienteRepoImpl implements ClienteRepo{
 
 			PreparedStatement statement = con.prepareStatement(FIND);
 			statement.setString(1, nombre_user);
-			System.out.println(statement);
+			//System.out.println(statement);
 			ResultSet rs = statement.executeQuery();
 			while (rs.next()) {
 				Cliente client = new Cliente();

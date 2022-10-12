@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+import java.util.stream.DoubleStream;
 
 import finalProject.basedatos.Conexion;
 import finalProject.excepxiones.ExcepcionesPersonalizadas;
@@ -90,7 +91,7 @@ public class ControladorPrincipal {
 					BancoRepoImpl brimpl = new BancoRepoImpl();
 					Banco banco = brimpl.obtenerBancoUser(conn, nameUser);
 					
-					System.out.println("hola bancp"+banco);
+					//System.out.println("hola bancp"+banco);
 					if (banco != null) {
 
 						String nombre = banco.getNombre();
@@ -124,6 +125,7 @@ public class ControladorPrincipal {
 		Map<String, String> mapaCuentas = cuenta.stream()
 				.collect(Collectors.toMap(e -> e.getNumero_cuenta() + "\t", e -> "\t" + e.getSaldo() + " USD"));
 		mapaCuentas.entrySet().stream().forEach(s -> System.out.println(s));
+		System.out.println("Monto total de dinero: "+cuenta.stream().flatMapToDouble(a->DoubleStream.of(a.getSaldo())).sum());
 		System.out.println();
 	}
 
@@ -237,6 +239,7 @@ public class ControladorPrincipal {
 		BancoRepoImpl ban = new BancoRepoImpl();
 		UsuarioRepoImpl USER = new UsuarioRepoImpl();
 		ClienteRepoImpl CLIENT = new ClienteRepoImpl();
+		LocalDate fecha_nacimiento = null;
 
 		Cliente newCliente = new Cliente();
 		Usuario newUsuario = new Usuario();
@@ -248,7 +251,10 @@ public class ControladorPrincipal {
 		System.out.print("Numero de cedula: ");
 		String cedula = sc.nextLine().trim();
 		System.out.print("Fecha nacimiento (yyyy/MM/dd): ");
-		LocalDate fecha_nacimiento = LocalDate.parse(sc.nextLine().trim(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+		String fn = sc.nextLine().trim();
+		if(validarFecha(fn)) {
+			fecha_nacimiento = LocalDate.parse(fn, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+		}
 		System.out.print("Sexo (M -> Masculino, F -> Femenino): ");
 		char sexo = sc.nextLine().trim().charAt(0);
 		System.out.print("Nombre usuario: ");
@@ -298,6 +304,7 @@ public class ControladorPrincipal {
 		BancoRepoImpl ban = new BancoRepoImpl();
 		UsuarioRepoImpl USER = new UsuarioRepoImpl();
 		ClienteRepoImpl CLIENT = new ClienteRepoImpl();
+		LocalDate fecha_nacimiento = null;
 
 		Cliente newCliente = new Cliente();
 		Usuario newUsuario = new Usuario();
@@ -309,7 +316,10 @@ public class ControladorPrincipal {
 		System.out.print("Numero de cedula: ");
 		String cedula = sc.nextLine().trim();
 		System.out.print("Fecha nacimiento (yyyy/MM/dd): ");
-		LocalDate fecha_nacimiento = LocalDate.parse(sc.nextLine().trim(), DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+		String fn = sc.nextLine().trim();
+		if(validarFecha(fn)) {
+			fecha_nacimiento = LocalDate.parse(fn, DateTimeFormatter.ofPattern("yyyy/MM/dd"));
+		}
 		System.out.print("Sexo (M -> Masculino, F -> Femenino): ");
 		char sexo = sc.nextLine().trim().charAt(0);
 		System.out.print("Nombre usuario: ");
@@ -390,6 +400,8 @@ public class ControladorPrincipal {
 					boolean d = crimpl.agregar(conn, cuenta);
 
 					if (d) {
+						boolean ingreso = TransaccionRepoImpl.ingresarDineroCuenta(numeroCuenta, cuenta.getSaldo());
+						if(ingreso) System.out.println("*********");
 						System.out.println("Cuenta numero | " + cuenta.getNumero_cuenta()
 								+ " | creada, ahora puede retirar e ingresar dinero");
 						System.out.println("su saldo es de: " + cuenta.getSaldo() + " USD");
@@ -506,5 +518,71 @@ public class ControladorPrincipal {
 
 		}
 	}
+	
+	
+	private static boolean validarFecha(String fecha) {
+		if (fecha.isBlank()) {
+			System.out.println("No se puede procesar un valor vacio");
+		}else {
+			String[] partesFecha = fecha.split("/");
+			if (partesFecha.length == 3) {
+				if (!validarAnio(partesFecha[0])) {
+					System.out.println("El año ingresado no es correcto");
+				}else if (!validarMes(partesFecha[1])) {
+					System.out.println("El mes ingresado no es correcto");
+				}else if (!validarDia(partesFecha[2])) {
+					System.out.println("El dia ingresado no es correcto");
+				}else {
+					return true;
+				}
 
+			}
+			else {
+				System.out.println("Error: El formato es incorrecto");
+				}
+			
+		}
+		return false;
+	}
+	
+	private static boolean validarDia(String dia) {
+		if (dia.length() != 2)
+			return false;
+		else { 
+			try {
+				int dd = Integer.parseInt(dia);
+				return (dd > 0 && dd < 31);
+			}
+			catch(NumberFormatException e) {
+				return false; 
+			}
+		}
+	}
+ 
+	private static boolean validarMes(String mes) {
+		if (mes.length() != 2)
+			return false;
+		else {
+			try {
+				int mm = Integer.parseInt(mes);
+				return (mm > 0 && mm < 13);
+			}catch(NumberFormatException e) {
+				return false;
+			}
+		}
+ 
+	}
+ 
+	private static boolean validarAnio(String anio) {
+		if (anio.length() != 4)
+			return false;
+		else {
+			try {
+				int aaaa = Integer.parseInt(anio);
+				return (aaaa != 0);
+			} catch(NumberFormatException e) {
+				return false;
+			}
+		}
+	}
 }
