@@ -21,6 +21,7 @@ public class Testeo {
 //		
 //		personas.forEach(System.out::println);
 		
+		List<Cliente> listaCliente2 = new ArrayList<>();
 		
 		
 		List<Cliente> listaCliente = new ArrayList<>();
