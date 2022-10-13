@@ -20,6 +20,8 @@ public class PersonaDTO {
 	
 	private Integer rol_usuario;
 	
+	private Integer id_estado;
+	
 	private String fn_nit;
 
 	public PersonaDTO(String identificacion) {
@@ -90,6 +92,14 @@ public class PersonaDTO {
 
 	public void setFn_nit(String fn_nit) {
 		this.fn_nit = fn_nit;
+	}
+
+	public Integer getId_estado() {
+		return id_estado;
+	}
+
+	public void setId_estado(Integer id_estado) {
+		this.id_estado = id_estado;
 	}
 	
 	

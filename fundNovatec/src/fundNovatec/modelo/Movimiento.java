@@ -1,5 +1,7 @@
 package fundNovatec.modelo;
 
+import java.sql.Date;
+
 public class Movimiento {
 
 	public Movimiento() {
@@ -15,6 +17,8 @@ public class Movimiento {
     private Deposito depositoCod;
     
     private Estado estadoId;
+    
+    private Date fechaMov;
 
 
     public Movimiento(Integer idMovimiento) {
@@ -65,5 +69,15 @@ public class Movimiento {
     public void setEstadoId(Estado estadoId) {
         this.estadoId = estadoId;
     }
+
+	public Date getFechaMov() {
+		return fechaMov;
+	}
+
+	public void setFechaMov(Date fechaMov) {
+		this.fechaMov = fechaMov;
+	}
+    
+    
 
 }

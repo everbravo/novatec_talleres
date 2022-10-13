@@ -19,6 +19,8 @@ public class Estado {
     private List<Movimiento> movimientoList;
     
     private List<Deposito> depositoList;
+    
+    private List<Persona> personaList;
 
     public Estado(Integer idEstado) {
         this.idEstado = idEstado;
@@ -76,5 +78,15 @@ public class Estado {
     public void setDepositoList(List<Deposito> depositoList) {
         this.depositoList = depositoList;
     }
+
+	public List<Persona> getPersonaList() {
+		return personaList;
+	}
+
+	public void setPersonaList(List<Persona> personaList) {
+		this.personaList = personaList;
+	}
+    
+    
 	
 }

@@ -24,6 +24,8 @@ public class Persona {
 	private RolUsuario rolUsuario;
 
 	private Sexo sexoId;
+	
+	private Estado estadoId;
 
 	private List<Deposito> depositoList;
 
@@ -119,5 +121,15 @@ public class Persona {
 	public void setUsuario(Usuario usuario) {
 		this.usuario = usuario;
 	}
+
+	public Estado getEstadoId() {
+		return estadoId;
+	}
+
+	public void setEstadoId(Estado estadoId) {
+		this.estadoId = estadoId;
+	}
+	
+	
 
 }

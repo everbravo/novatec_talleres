@@ -1,5 +1,7 @@
 package fundNovatec.dto;
 
+import java.sql.Date;
+
 public class MovimientoDTO {
 
 	public MovimientoDTO() {
@@ -13,6 +15,8 @@ public class MovimientoDTO {
     private String campanaId;
     
     private String deposito_cod;
+    
+    private Date fechaMov;
 
 	public MovimientoDTO(Integer idMovimiento) {
 		this.idMovimiento = idMovimiento;
@@ -55,6 +59,10 @@ public class MovimientoDTO {
 
 	public void setDeposito_cod(String deposito_cod) {
 		this.deposito_cod = deposito_cod;
+	}
+
+	public Date getFechaMov() {
+		return fechaMov;
 	}
     
     
