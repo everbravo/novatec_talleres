@@ -1,24 +1,21 @@
-package fundNovatec.modelo;
+package fundNovatec.dto;
 
-public class Usuario {
+public class UsuarioDTO {
 
-	public Usuario() {
-		// TODO Auto-generated constructor stub
+	public UsuarioDTO() {
 	}
-
+	
 	private int nameuser;
 
 	private String password;
 
 	private String personaId;
-
-	private Persona persona;
-
-	public Usuario(String personaId) {
+	
+	public UsuarioDTO(String personaId) {
 		this.personaId = personaId;
 	}
 
-	public Usuario(String personaId, int nameuser, String password) {
+	public UsuarioDTO(String personaId, int nameuser, String password) {
 		this.personaId = personaId;
 		this.nameuser = nameuser;
 		this.password = password;
@@ -47,15 +44,5 @@ public class Usuario {
 	public void setPersonaId(String personaId) {
 		this.personaId = personaId;
 	}
-
-	public Persona getPersona() {
-		return persona;
-	}
-
-	public void setPersona(Persona persona) {
-		this.persona = persona;
-	}
-	
-	
 
 }

@@ -1,11 +1,8 @@
-package fundNovatec.modelo;
+package fundNovatec.dto;
 
-import java.util.List;
+public class FundacionDTO {
 
-public class Fundacion {
-
-	public Fundacion() {
-		// TODO Auto-generated constructor stub
+	public FundacionDTO() {
 	}
 	
 	private String nit;
@@ -15,16 +12,12 @@ public class Fundacion {
     private String razonSocial;
     
     private String monedaIso;
-   
-    private List<Campana> campanaList;
     
-    private List<Persona> personaList;
-
-    public Fundacion(String nit) {
+    public FundacionDTO(String nit) {
         this.nit = nit;
     }
 
-    public Fundacion(String nit, String nombre, String monedaIso) {
+    public FundacionDTO(String nit, String nombre, String monedaIso) {
         this.nit = nit;
         this.nombre = nombre;
         this.monedaIso = monedaIso;
@@ -60,22 +53,6 @@ public class Fundacion {
 
     public void setMonedaIso(String monedaIso) {
         this.monedaIso = monedaIso;
-    }
-
-    public List<Campana> getCampanaList() {
-        return campanaList;
-    }
-
-    public void setCampanaList(List<Campana> campanaList) {
-        this.campanaList = campanaList;
-    }
-
-    public List<Persona> getPersonaList() {
-        return personaList;
-    }
-
-    public void setPersonaList(List<Persona> personaList) {
-        this.personaList = personaList;
     }
 
 }

@@ -1,26 +1,23 @@
-package fundNovatec.modelo;
+package fundNovatec.dto;
 
-public class ParametrosCampana {
+public class ParametrosCampanaDTO {
 
-	public ParametrosCampana() {
-		// TODO Auto-generated constructor stub
+	public ParametrosCampanaDTO() {
 	}
-	
-	private int cantDonadores;
+
+	private Integer cantDonadores;
     
-    private int cantDonacionesPermit;
+    private Integer cantDonacionesPermit;
     
-    private double cantMaxDonador;
+    private Double cantMaxDonador;
     
     private String campanaId;
     
-    private Campana campana;
-
-    public ParametrosCampana(String campanaId) {
+    public ParametrosCampanaDTO(String campanaId) {
         this.campanaId = campanaId;
     }
 
-    public ParametrosCampana(String campanaId, int cantDonadores, int cantDonacionesPermit, double cantMaxDonador) {
+    public ParametrosCampanaDTO(String campanaId, int cantDonadores, int cantDonacionesPermit, double cantMaxDonador) {
         this.campanaId = campanaId;
         this.cantDonadores = cantDonadores;
         this.cantDonacionesPermit = cantDonacionesPermit;
@@ -58,13 +55,7 @@ public class ParametrosCampana {
     public void setCampanaId(String campanaId) {
         this.campanaId = campanaId;
     }
-
-    public Campana getCampana() {
-        return campana;
-    }
-
-    public void setCampana(Campana campana) {
-        this.campana = campana;
-    }
-
+    
+    
+	
 }
