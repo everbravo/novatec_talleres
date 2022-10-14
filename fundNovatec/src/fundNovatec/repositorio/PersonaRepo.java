@@ -1,6 +1,9 @@
 package fundNovatec.repositorio;
 
+import java.time.LocalDate;
+
 import fundNovatec.dto.PersonaDTO;
+import fundNovatec.reporte.PersonaDonadorPtllDTO;
 
 public interface PersonaRepo {
 
@@ -13,6 +16,8 @@ public interface PersonaRepo {
 	public boolean actulizar(String identificacion, PersonaDTO persona);
 	
 	public PersonaDTO obtenerPorIdentificacion(String identificacion);
+	
+	public PersonaDonadorPtllDTO generarReporteDonacion(LocalDate fecha1, LocalDate fecha2);
 
 	
 }

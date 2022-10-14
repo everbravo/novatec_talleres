@@ -4,9 +4,11 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.time.LocalDate;
 
 import fundNovatec.conexion.Conexion;
 import fundNovatec.dto.PersonaDTO;
+import fundNovatec.reporte.PersonaDonadorPtllDTO;
 import fundNovatec.repositorio.PersonaRepo;
 
 public class PersonaRepoImpl implements PersonaRepo{
@@ -157,6 +159,14 @@ public class PersonaRepoImpl implements PersonaRepo{
 		} catch (SQLException e) {
 			System.out.println("Persona:buscarId:Error -> "+e.getMessage());
 		}
+		
+		return null;
+	}
+
+	@Override
+	public PersonaDonadorPtllDTO generarReporteDonacion(LocalDate fecha1, LocalDate fecha2) {
+		
+		
 		
 		return null;
 	}
