@@ -1,10 +1,14 @@
 package fundNovatec.persistencia;
 
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import fundNovatec.conexion.Conexion;
 import fundNovatec.dto.PersonaDTO;
@@ -164,9 +168,54 @@ public class PersonaRepoImpl implements PersonaRepo{
 	}
 
 	@Override
-	public PersonaDonadorPtllDTO generarReporteDonacion(LocalDate fecha1, LocalDate fecha2) {
+	public List<PersonaDonadorPtllDTO> generarReporteDonacion(String cedula, LocalDate fecha1, LocalDate fecha2) {
 		
+		final String QUERY = "select p.nombre as nombre, p.apellidos as apellido, ru.descripcion as rol, "
+				+ "m.valor as val, m.fecha_mov as fmov, c.nombre_campana as ncamp, c.objetivo_campana as objcamp, c.id_campana as campid "
+				+ "from persona p join rol_usuario ru on ru.id_rol = p.rol_usuario "
+				+ "join deposito d on ? = d.persona_id "
+				+ "join movimiento m on d.codigo_deposito = m.deposito_cod "
+				+ "join campana c on m.campana_id = c.id_campana "
+				+ "where (m.fecha_mov between ? and ?) ";
 		
+		PersonaDTO donador = obtenerPorIdentificacion(cedula);
+		if(donador != null) {
+			 
+			List<PersonaDonadorPtllDTO> reporte = new ArrayList<>();
+			
+			try {
+				
+				psmt = CONN.prepareStatement(QUERY);
+				psmt.setString(1, cedula);
+				psmt.setDate(2, Date.valueOf(fecha1));
+				psmt.setDate(3, Date.valueOf(fecha2));
+				
+				ResultSet rs = psmt.executeQuery();
+				
+				while(rs.next()) {
+					
+					PersonaDonadorPtllDTO rows = new PersonaDonadorPtllDTO();
+					rows.setNombre(rs.getString("nombre"));
+					rows.setApellidos(rs.getString("apellido"));
+					rows.setFecha_donacion(rs.getDate("fmov"));
+					rows.setValor(rs.getDouble("val"));
+					rows.setNombre_campana(rs.getString("ncamp"));
+					rows.setCodigo_campana(rs.getString("campid"));
+					rows.setFecha_emision(LocalDateTime.now());
+					rows.setObjetivo_campaña(rs.getString("objcamp"));
+					rows.setRol(rs.getString("rol"));
+					
+					reporte.add(rows);
+					
+				}
+				
+				return reporte;
+				
+			} catch (SQLException e) {
+				System.out.println("Persona:generarReporte:Error -> "+e.getMessage());
+			}
+			
+		}
 		
 		return null;
 	}

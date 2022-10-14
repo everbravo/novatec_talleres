@@ -22,9 +22,14 @@ public class PersonaDonadorPtllDTO {
 	private String codigo_campana;
 	
 	private LocalDateTime fecha_emision;
+	
+	private String rol;
+	
+	private String objetivo_campaña;
 
 	public PersonaDonadorPtllDTO(String nombre, String apellidos, Date fecha_donacion, Double valor,
-			String nombre_campana, String codigo_campana, LocalDateTime fecha_emision) {
+			String nombre_campana, String codigo_campana, LocalDateTime fecha_emision, String rol,
+			String objetivo_campaña) {
 		super();
 		this.nombre = nombre;
 		this.apellidos = apellidos;
@@ -33,6 +38,8 @@ public class PersonaDonadorPtllDTO {
 		this.nombre_campana = nombre_campana;
 		this.codigo_campana = codigo_campana;
 		this.fecha_emision = fecha_emision;
+		this.rol = rol;
+		this.objetivo_campaña = objetivo_campaña;
 	}
 
 	public String getNombre() {
@@ -90,6 +97,23 @@ public class PersonaDonadorPtllDTO {
 	public void setFecha_emision(LocalDateTime fecha_emision) {
 		this.fecha_emision = fecha_emision;
 	}
+
+	public String getRol() {
+		return rol;
+	}
+
+	public void setRol(String rol) {
+		this.rol = rol;
+	}
+
+	public String getObjetivo_campaña() {
+		return objetivo_campaña;
+	}
+
+	public void setObjetivo_campaña(String objetivo_campaña) {
+		this.objetivo_campaña = objetivo_campaña;
+	}
+	
 	
 	
 
