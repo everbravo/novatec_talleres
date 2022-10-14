@@ -8,9 +8,11 @@ public interface CampanaRepo {
 
 	public boolean agregar(CampanaDTO campana);
 	
-	public boolean eliminar(String id);
+	public boolean eliminar(String id, int idEstado);
 	
 	public boolean actualizar(String id, CampanaDTO campana);
+	
+	public CampanaDTO buscarPorId(String id);
 	
 	public List<CampanaDTO> listarTodo();
 	

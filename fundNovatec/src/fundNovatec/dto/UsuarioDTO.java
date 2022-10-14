@@ -5,7 +5,7 @@ public class UsuarioDTO {
 	public UsuarioDTO() {
 	}
 	
-	private int nameuser;
+	private String nameuser;
 
 	private String password;
 
@@ -15,17 +15,17 @@ public class UsuarioDTO {
 		this.personaId = personaId;
 	}
 
-	public UsuarioDTO(String personaId, int nameuser, String password) {
+	public UsuarioDTO(String personaId, String nameuser, String password) {
 		this.personaId = personaId;
 		this.nameuser = nameuser;
 		this.password = password;
 	}
 
-	public int getNameuser() {
+	public String getNameuser() {
 		return nameuser;
 	}
 
-	public void setNameuser(int nameuser) {
+	public void setNameuser(String nameuser) {
 		this.nameuser = nameuser;
 	}
 

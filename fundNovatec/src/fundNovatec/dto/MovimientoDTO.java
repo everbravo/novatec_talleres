@@ -8,6 +8,8 @@ public class MovimientoDTO {
 		// TODO Auto-generated constructor stub
 	}
 
+	private int estado_id;
+	
 	private Integer idMovimiento;
     
     private Double valor;
@@ -63,6 +65,18 @@ public class MovimientoDTO {
 
 	public Date getFechaMov() {
 		return fechaMov;
+	}
+
+	public int getEstado_id() {
+		return estado_id;
+	}
+
+	public void setEstado_id(int estado_id) {
+		this.estado_id = estado_id;
+	}
+
+	public void setFechaMov(Date fechaMov) {
+		this.fechaMov = fechaMov;
 	}
     
     

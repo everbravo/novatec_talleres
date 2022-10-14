@@ -8,14 +8,14 @@ public interface MovimientoRepo {
 
 	public boolean agregar(MovimientoDTO movi);
 	
-	public boolean cambiarEstado(int id, MovimientoDTO movi);
+	public List<MovimientoDTO> listarPorDeposito(String deeposito);
 	
-	public List<MovimientoDTO> listarPorDeposito();
+	public List<MovimientoDTO> listarPorCampana(String campana);
 	
-	public List<MovimientoDTO> listarPorCampaña();
-	
-	public List<MovimientoDTO> listarPorEstado();
+	public List<MovimientoDTO> listarPorEstado(int estado);
 	
 	public List<MovimientoDTO> listarTodo();
+	
+	public MovimientoDTO obtenerPorId(int id);
 	
 }
