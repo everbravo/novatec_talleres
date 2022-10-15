@@ -29,19 +29,19 @@ public class EstadoDTO {
 	}
 
 	public String getDescripcion() {
-		return descripcion;
+		return descripcion.toUpperCase();
 	}
 
 	public void setDescripcion(String descripcion) {
-		this.descripcion = descripcion;
+		this.descripcion = descripcion.toUpperCase();
 	}
 
 	public Character getCategoria() {
-		return categoria;
+		return Character.toUpperCase(categoria);
 	}
 
 	public void setCategoria(Character categoria) {
-		this.categoria = categoria;
+		this.categoria = Character.toUpperCase(categoria);
 	}
     
     

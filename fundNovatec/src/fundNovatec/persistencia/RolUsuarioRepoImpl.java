@@ -156,5 +156,27 @@ public class RolUsuarioRepoImpl implements RolUsuarioRepo{
 	}
 	
 	
+	public int rolUsuarioReg() {
+		
+		String comodin = "%DONANTE%";
+		final String FIND = "select id_rol from rol_usuario where descripcion like ?";
+		
+		try {
+			
+			psmt = CONN.prepareStatement(FIND);
+			psmt.setString(1, comodin);
+			
+			ResultSet rs = psmt.executeQuery();
+			while(rs.next()) {
+				return rs.getInt("id_rol");
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("RolUsuario:obtenerCodigoDonante:Error -> "+e.getMessage());
+		}
+		
+		return -1;
+	}
+	
 
 }

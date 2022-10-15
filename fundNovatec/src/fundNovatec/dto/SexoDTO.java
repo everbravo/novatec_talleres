@@ -28,11 +28,11 @@ public class SexoDTO {
     }
 
     public String getDescripcion() {
-        return descripcion;
+        return descripcion.toUpperCase();
     }
 
     public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+        this.descripcion = descripcion.toUpperCase();
     }
 
 }

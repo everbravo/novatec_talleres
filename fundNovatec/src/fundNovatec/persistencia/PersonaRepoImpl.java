@@ -54,7 +54,7 @@ public class PersonaRepoImpl implements PersonaRepo{
 	@Override
 	public boolean inactivar(String identificacion, int idEst) {
 		PersonaDTO persona = obtenerPorIdentificacion(identificacion);
-		final String UPDATE = "update persona set estado_id = ? where identificacion = ?";
+		final String UPDATE = "update persona set id_estado = ? where identificacion = ?";
 		
 		if(persona != null) {
 			
@@ -77,6 +77,7 @@ public class PersonaRepoImpl implements PersonaRepo{
 		
 		return false;
 	}
+
 
 	@Override
 	public boolean activar(String identificacion, int idEst) {

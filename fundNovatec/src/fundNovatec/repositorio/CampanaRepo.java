@@ -18,4 +18,6 @@ public interface CampanaRepo {
 	
 	public List<CampanaDTO> listarPorEstado(int estado);
 	
+	
+	
 }

@@ -28,7 +28,7 @@ public class EstadoRepoImpl implements EstadoRepo{
 			
 			psmt = CONN.prepareStatement(INSERT);
 			psmt.setString(1, estado.getDescripcion());
-			psmt.setString(3, String.valueOf(estado.getCategoria()));
+			psmt.setString(2, String.valueOf(estado.getCategoria()));
 			
 			int rowsAfected = psmt.executeUpdate();
 			
@@ -211,6 +211,48 @@ public class EstadoRepoImpl implements EstadoRepo{
 		}
 		
 		return false;
+	}
+	
+	public static int getCodInactivo() {
+		
+		final String FIND = "select id_estado from estado where descripcion like '%INACTIVO%'";
+		
+		try {
+			
+			Statement stm = CONN.createStatement();
+			ResultSet rs = stm.executeQuery(FIND);
+			
+			while(rs.next()) {
+				return rs.getInt("id_estado");
+			}
+			
+			
+		} catch (SQLException e) {
+			System.out.println("Estado:obtenerCodigoInactivo:Error -> "+e.getMessage());
+		}
+		
+		return -1;
+	}
+	
+	public static int getCodActivo() {
+		
+		final String FIND = "select id_estado from estado where descripcion like '%ACTIVO%'";
+		
+		try {
+			
+			Statement stm = CONN.createStatement();
+			ResultSet rs = stm.executeQuery(FIND);
+			
+			while(rs.next()) {
+				return rs.getInt("id_estado");
+			}
+			
+			
+		} catch (SQLException e) {
+			System.out.println("Estado:obtenerCodigoActivo:Error -> "+e.getMessage());
+		}
+		
+		return -1;
 	}
 
 }

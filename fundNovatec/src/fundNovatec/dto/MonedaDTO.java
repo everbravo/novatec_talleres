@@ -23,11 +23,11 @@ public class MonedaDTO {
     }
 
     public String getCodigoIso() {
-        return codigoIso;
+        return codigoIso.toUpperCase();
     }
 
     public void setCodigoIso(String codigoIso) {
-        this.codigoIso = codigoIso;
+        this.codigoIso = codigoIso.toUpperCase();
     }
 
     public double getTasaConversionCop() {
@@ -39,11 +39,11 @@ public class MonedaDTO {
     }
 
     public String getDescripcion() {
-        return descripcion;
+        return descripcion.toUpperCase();
     }
 
     public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
+        this.descripcion = descripcion.toUpperCase();
     }
     
 
