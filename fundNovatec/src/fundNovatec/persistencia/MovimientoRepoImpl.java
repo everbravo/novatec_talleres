@@ -9,6 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fundNovatec.conexion.Conexion;
+import fundNovatec.controlador.ControladorDonador;
+import fundNovatec.controlador.ControladorParametros;
 import fundNovatec.dto.MovimientoDTO;
 import fundNovatec.repositorio.MovimientoRepo;
 
@@ -22,7 +24,11 @@ public class MovimientoRepoImpl implements MovimientoRepo{
 
 	@Override
 	public boolean agregar(MovimientoDTO movi) {
-		final String INSERT = "insert into movimiento (estado_id, deposito_cod, campaña_id, valor) values (?, ?, ?, ?)";
+		final String INSERT = "insert into movimiento (estado_id, deposito_cod, campana_id, valor) values (?, ?, ?, ?)";
+		
+		DepositoRepoImpl DEP = new DepositoRepoImpl();
+		String isomon = DEP.buscarPorId(movi.getDeposito_cod()).getMonedaCod();
+		Double d = ControladorDonador.convertirACop(movi.getValor(), isomon);
 		
 		try {
 			
@@ -30,7 +36,7 @@ public class MovimientoRepoImpl implements MovimientoRepo{
 			psmt.setInt(1, movi.getEstado_id());
 			psmt.setString(2, movi.getDeposito_cod());
 			psmt.setString(3, movi.getCampanaId());
-			psmt.setDouble(4, movi.getValor());
+			psmt.setDouble(4, d);
 			
 			int rowsAfected = psmt.executeUpdate();
 			

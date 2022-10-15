@@ -6,12 +6,15 @@ import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 
 import fundNovatec.dto.DepositoDTO;
+import fundNovatec.dto.MonedaDTO;
+import fundNovatec.dto.MovimientoDTO;
 import fundNovatec.dto.PersonaDTO;
 import fundNovatec.dto.UsuarioDTO;
 import fundNovatec.operaciones.OperacionesPersonalizadas;
 import fundNovatec.persistencia.DepositoRepoImpl;
 import fundNovatec.persistencia.EstadoRepoImpl;
 import fundNovatec.persistencia.MonedaRepoImpl;
+import fundNovatec.persistencia.MovimientoRepoImpl;
 import fundNovatec.persistencia.PersonaRepoImpl;
 import fundNovatec.persistencia.UsuarioRepoImpl;
 
@@ -23,6 +26,7 @@ public class ControladorDonador {
 	private final static MonedaRepoImpl MON = new MonedaRepoImpl();
 	private final static EstadoRepoImpl EST = new EstadoRepoImpl();
 	private final static DepositoRepoImpl DEP = new DepositoRepoImpl();
+	private final static MovimientoRepoImpl MOV = new MovimientoRepoImpl();
 	
 	public ControladorDonador() {
 	}
@@ -87,6 +91,7 @@ public class ControladorDonador {
 				boolean  exito = PER.inactivar(p.getIdentificacion(), EstadoRepoImpl.getCodInactivo());
 				if(exito) {
 					System.out.println("Usted se ha registrado como donante.");
+					
 				}
 			}else {
 				System.out.println("Error en el proceso de registro.");
@@ -115,9 +120,19 @@ public class ControladorDonador {
 			
 			switch (op) {
 			case "1":
+				imprimirFondo(perId);
 				crearDeposito(perId);
 				break;
 			case "2":
+				System.out.println("CUENTAS");
+				imprimirFondo(perId);
+				System.out.println("Ingrese el numero de la cuenta a eliminar: ");
+				String cuent = SC.nextLine().trim();
+				
+				boolean conf = DEP.eliminar(cuent);
+				if(conf) {
+					System.out.println("Fondo Elimiando...");
+				}
 				
 				break;
 			case "3":
@@ -138,9 +153,25 @@ public class ControladorDonador {
 		} while (confirma);
 	}
 	
+	public static void imprimirFondo(String perId) {
+		DEP.listarPorPersona(perId).stream().forEach(x->System.out.println(x.getCodigoDeposito()+" -- saldo de --> "+x.getSaldo()+x.getMonedaCod()+" -- a COP -->"+convertirACop(x.getSaldo(), x.getMonedaCod())));
+	}
+	
+	public static Double convertirACop(Double valor, String moneda) {
+		Double result = 0D;
+		
+		MonedaDTO moned =  MON.buscarPorId(moneda);
+		if(moned != null) {
+			Double valorMon = moned.getTasaConversionCop();
+			result = valor * valorMon;
+		}
+		
+		return result;
+	}
+	
 	
 	public static void crearDeposito(String perId) {
-		
+		String codiDep = "";
 		System.out.println("Ingrese el codigo ISO de la moneda: ");
 		MON.listarTodo().stream().forEach(x->System.out.println(x.getCodigoIso()+" -> "+x.getDescripcion()));
 		String iso = SC.nextLine().trim();
@@ -148,22 +179,35 @@ public class ControladorDonador {
 		System.out.println("Ingrese la cantidad que desea cargar: ");
 		Double cant = Double.valueOf(SC.nextLine().trim());
 		
-		String codiDep = ControladorParametros.generarNumeroDeposito();
+		codiDep = ControladorParametros.generarNumeroDeposito();
 		
-		int estadoId = EstadoRepoImpl.getCodActivo();
-		
-		DepositoDTO dpos = new DepositoDTO();
-		dpos.setCodigoDeposito(codiDep);
-		dpos.setEstadoId(estadoId);
-		dpos.setMonedaCod(iso);
-		dpos.setPersonaId(perId);
-		dpos.setSaldo(cant);
-		
-		boolean confirma = DEP.agregar(dpos);
-		
-		if(confirma) {
+		if(DEP.buscarPorId(codiDep) != null) {
+			codiDep = ControladorParametros.generarNumeroDeposito();
+		}else {
+			int estadoId = EstadoRepoImpl.getCodActivo();
 			
+			DepositoDTO dpos = new DepositoDTO();
+			dpos.setCodigoDeposito(codiDep);
+			dpos.setEstadoId(estadoId);
+			dpos.setMonedaCod(iso);
+			dpos.setPersonaId(perId);
+			dpos.setSaldo(cant);
+			
+			int codEstTr = EstadoRepoImpl.getCodEst("INGRESO");
+			MovimientoDTO movimie = new MovimientoDTO();
+			movimie.setValor(dpos.getSaldo());
+			movimie.setEstado_id(codEstTr);
+			movimie.setDeposito_cod(dpos.getCodigoDeposito());
+			
+			boolean confirma = DEP.agregar(dpos);
+			if(confirma) {
+				boolean conf = MOV.agregar(movimie);
+				if(conf) {
+					System.out.println("Se creó el deposito");
+				}
+			}
 		}
+		
 	}
 	
 	

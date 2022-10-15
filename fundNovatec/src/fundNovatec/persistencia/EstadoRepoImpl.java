@@ -254,5 +254,26 @@ public class EstadoRepoImpl implements EstadoRepo{
 		
 		return -1;
 	}
+	
+	public static int getCodEst(String patron) {
+		
+		final String FIND = "select id_estado from estado where descripcion like '%"+patron+"%'";
+		
+		try {
+			
+			Statement stm = CONN.createStatement();
+			ResultSet rs = stm.executeQuery(FIND);
+			
+			while(rs.next()) {
+				return rs.getInt("id_estado");
+			}
+			
+			
+		} catch (SQLException e) {
+			System.out.println("Estado:obtenerCodigo"+patron+":Error -> "+e.getMessage());
+		}
+		
+		return -1;
+	}
 
 }

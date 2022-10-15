@@ -12,7 +12,8 @@ public class Main {
 		//ControladorParametros.registrarMoneda();
 		//ControladorParametros.registrarFundacion();
 		//ControladorDonador.registrarDonador();
-		ControladorParametros.iniciarSesion();
+		//ControladorParametros.iniciarSesion();
+		ControladorDonador.accionesDeposito("21343534");
 	}
 
 }
