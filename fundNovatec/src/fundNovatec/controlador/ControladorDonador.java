@@ -3,14 +3,18 @@ package fundNovatec.controlador;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.List;
 import java.util.Scanner;
+import java.util.stream.DoubleStream;
 
+import fundNovatec.dto.CampanaDTO;
 import fundNovatec.dto.DepositoDTO;
 import fundNovatec.dto.MonedaDTO;
 import fundNovatec.dto.MovimientoDTO;
 import fundNovatec.dto.PersonaDTO;
 import fundNovatec.dto.UsuarioDTO;
 import fundNovatec.operaciones.OperacionesPersonalizadas;
+import fundNovatec.persistencia.CampanaRepoImpl;
 import fundNovatec.persistencia.DepositoRepoImpl;
 import fundNovatec.persistencia.EstadoRepoImpl;
 import fundNovatec.persistencia.MonedaRepoImpl;
@@ -24,9 +28,10 @@ public class ControladorDonador {
 	private final static PersonaRepoImpl PER = new PersonaRepoImpl();
 	private final static UsuarioRepoImpl USER = new UsuarioRepoImpl();
 	private final static MonedaRepoImpl MON = new MonedaRepoImpl();
-	private final static EstadoRepoImpl EST = new EstadoRepoImpl();
 	private final static DepositoRepoImpl DEP = new DepositoRepoImpl();
 	private final static MovimientoRepoImpl MOV = new MovimientoRepoImpl();
+	private final static CampanaRepoImpl CAMP = new CampanaRepoImpl();
+	
 	
 	public ControladorDonador() {
 	}
@@ -102,47 +107,122 @@ public class ControladorDonador {
 		
 	}
 	
-	
-	public static void accionesDeposito(String perId) {
+	public static boolean verificarEstadoDonante(String id) {
 		
-		String opciones = "MENÚ DEPOSITOS\n"
-				+ "1 -> Crear Deposito\n"
-				+ "2 -> Eliminar Deposito\n"
-				+ "3 -> Editar Deposito\n"
-				+ "4 -> Solicitar Activación de Cuenta\n"
+		PersonaDTO per = PER.obtenerPorIdentificacion(id);
+		if(per != null) {
+			int estado = per.getId_estado();
+			int codInac = EstadoRepoImpl.getCodInactivo();
+			if(estado == codInac) {
+				return false;
+			}
+			
+		}else {
+			System.out.println("Error inesperado en el sistema");
+		}
+		
+		return true;
+	}
+	
+	public static void accionesCampaña(String id) {
+		
+		String opciones = "MENÚ CAMPAÑAS\n"
+				+ "1 -> Unirse a campaña\n"
 				+ "0 -> Salir";
 		
 		boolean confirma = true;
 		do {
+			listarCampanasInscrito(id);
+			System.out.println(opciones);
+			System.out.println("Ingrese una opcion: ");
+			String op = SC.nextLine().trim();
+			
+			switch (op) {
+			case "1":
+				listarCampanasActivas();
+				ingresarACampana(id);
+				break;
+			case "0":
+				confirma = false;
+				break;
+			default:
+				System.out.println("Opción Erronea");
+				break;
+			}
+		}while(confirma);
+	}
+	
+	
+	public static void ingresarACampana(String id) {
+			
+				System.out.println("Ingrese el codigo de la campaña: ");
+				String mon = SC.nextLine().trim();
+				
+				if(mon!="") {
+					CampanaDTO find = CAMP.buscarPorId(mon);
+					if(find != null) {
+						boolean resp = CAMP.agregarCampDon(mon, id);
+						if(resp) {
+							System.out.println("Se acaba de inscribir en la campaña");
+						}else {
+							System.out.println("Error interno al inscribir en la campaña");
+						}
+					}else {
+						System.out.println("no se encontró la moneda");
+					}
+				}
+			
+	}
+	
+	public static void listarCampanasActivas() {
+		System.out.println("CAMPAÑAS ACTIVAS");
+		System.out.println("----------------------------------------------");
+		CAMP.listarTodoActivo().stream().forEach(z -> System.out.println("| "+z.getIdCampana()+" | -> "+z.getNombreCampana()));
+		System.out.println("----------------------------------------------");
+	}
+	
+	public static void listarCampanasInscrito(String id) {
+		System.out.println("CAMPAÑAS EN PARTICIPACIÓN");
+		System.out.println("----------------------------------------------");
+		CAMP.listarTodoInscrito(id).stream().forEach(z -> System.out.println("| "+z.getIdCampana()+" | -> "+z.getNombreCampana()));
+		System.out.println("----------------------------------------------");
+	}
+	
+	
+	public static void accionesDeposito(String perId) {
+
+		String opciones = "MENÚ DEPOSITOS\n"
+				+ "1 -> Crear Deposito\n"
+				+ "2 -> Eliminar fondo\n"
+				/*+ "3 -> Editar Deposito\n"*/
+				+ "3 -> Solicitar Activación de Cuenta\n"
+				+ "0 -> Salir";
+		
+		
+		boolean confirma = true;
+		do {
+			
+			System.out.println("CUENTAS");
+			imprimirFondo(perId);
+			System.out.println("----------------------------------------------");
+			System.out.println("Saldo total en fondos: $"+saldoAcomulado(perId)+"COP");
+			System.out.println("----------------------------------------------");
 			
 			System.out.println(opciones);
 			String op = SC.nextLine().trim();
 			
 			switch (op) {
 			case "1":
-				imprimirFondo(perId);
 				crearDeposito(perId);
 				break;
 			case "2":
-				System.out.println("CUENTAS");
-				imprimirFondo(perId);
-				System.out.println("Ingrese el numero de la cuenta a eliminar: ");
-				String cuent = SC.nextLine().trim();
-				
-				boolean conf = DEP.eliminar(cuent);
-				if(conf) {
-					System.out.println("Fondo Elimiando...");
-				}
-				
+				eliminarFonfo();
 				break;
 			case "3":
-	
-				break;
-			case "4":
-				
+				solicitarActivacion(perId);
 				break;
 			case "0":
-	
+				confirma = false;
 				break;
 
 			default:
@@ -151,6 +231,59 @@ public class ControladorDonador {
 			}
 			
 		} while (confirma);
+	}
+	
+	public static void solicitarActivacion(String usuario) {
+		boolean isActive = verificarEstadoDonante(usuario);
+		if(isActive) {
+			System.out.println("Esta opcion esta deshabilitada para su cuenta, debido a que su usuario ya se ha activado con anterioridad...");
+		}else {
+			Double saldo = saldoAcomulado(usuario);
+			System.out.println("El saldo actual es de: "+saldo);
+			if(saldo >= 1000000) {
+				boolean activo = PER.activar(usuario, EstadoRepoImpl.getCodActivo());
+				if(activo) {
+					System.out.println("Su usuario acaba de ser activado, ahora puede iniciar sesión e inscribirse a campañas");
+				}
+			}else {
+				System.out.println("Ops... esat opcion aun no esta disponible para tí.");
+				System.out.println("Señor donante, recuerde que por politicas internas se requiere tener el valor inicial de $1,000,000COP\n"
+						+ " para activar su cuenta, por tanto si usted actualmente no posee esa cantidad lo invitamos a ingresar fondos.");
+			}
+		}
+		
+	}
+	
+	public static Double saldoAcomulado(String cuent) {
+		return DEP.listarPorPersona(cuent).stream().flatMapToDouble(a->DoubleStream.of(convertirACop(a.getSaldo(), a.getMonedaCod()))).sum();
+	}
+	
+	
+	public static void editarFondo() {
+		System.out.println("Ingrese el numero del fondo a editar: ");
+		String cuent = SC.nextLine().trim();
+		
+		DepositoDTO deposito = DEP.buscarPorId(cuent);
+		if(deposito != null) {
+			System.out.println("Ingrese el saldo a editar");
+		}else {
+			System.out.println("El numero de posito ingresado no existe");
+		}
+	}
+	
+	public static void eliminarFonfo() {
+		System.out.println("Ingrese el numero de fondo a eliminar: ");
+		String cuent = SC.nextLine().trim();
+		
+		DepositoDTO deposito = DEP.buscarPorId(cuent);
+		if(deposito != null) {
+			boolean conf = DEP.eliminar(cuent);
+			if(conf) {
+				System.out.println("Fondo Elimiando...");
+			}
+		}else {
+			System.out.println("El numero de posito ingresado no existe");
+		}
 	}
 	
 	public static void imprimirFondo(String perId) {
@@ -211,7 +344,7 @@ public class ControladorDonador {
 	}
 	
 	
-	private static boolean validarFecha(String fecha) {
+	public static boolean validarFecha(String fecha) {
 		if (fecha.isBlank()) {
 			System.out.println("No se puede procesar un valor vacio");
 		}else {

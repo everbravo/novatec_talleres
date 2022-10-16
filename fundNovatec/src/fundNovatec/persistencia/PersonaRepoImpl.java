@@ -82,7 +82,7 @@ public class PersonaRepoImpl implements PersonaRepo{
 	@Override
 	public boolean activar(String identificacion, int idEst) {
 		PersonaDTO persona = obtenerPorIdentificacion(identificacion);
-		final String UPDATE = "update persona set estado_id = ? where identificacion = ?";
+		final String UPDATE = "update persona set id_estado = ? where identificacion = ?";
 		
 		if(persona != null) {
 			
@@ -157,6 +157,7 @@ public class PersonaRepoImpl implements PersonaRepo{
 				persona.setSexo_id(rs.getInt("sexo_id"));
 				persona.setRol_usuario(rs.getInt("rol_usuario"));
 				persona.setFn_nit(rs.getString("fn_nit"));
+				persona.setId_estado(rs.getInt("id_estado"));
 				
 				return persona;
 			}

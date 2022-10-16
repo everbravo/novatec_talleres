@@ -13,49 +13,71 @@ public class ParametrosCampanaDTO {
     
     private String campanaId;
     
+    private Double cantMin;
+    
+    private float porcentaje;
+    
     public ParametrosCampanaDTO(String campanaId) {
         this.campanaId = campanaId;
     }
 
-    public ParametrosCampanaDTO(String campanaId, int cantDonadores, int cantDonacionesPermit, double cantMaxDonador) {
-        this.campanaId = campanaId;
-        this.cantDonadores = cantDonadores;
-        this.cantDonacionesPermit = cantDonacionesPermit;
-        this.cantMaxDonador = cantMaxDonador;
-    }
+    public ParametrosCampanaDTO(Integer cantDonadores, Integer cantDonacionesPermit, Double cantMaxDonador,
+			Double cantMin, float porcentaje) {
+		super();
+		this.cantDonadores = cantDonadores;
+		this.cantDonacionesPermit = cantDonacionesPermit;
+		this.cantMaxDonador = cantMaxDonador;
+		this.cantMin = cantMin;
+		this.porcentaje = porcentaje;
+	}
 
-    public int getCantDonadores() {
-        return cantDonadores;
-    }
+	public Integer getCantDonadores() {
+		return cantDonadores;
+	}
 
-    public void setCantDonadores(int cantDonadores) {
-        this.cantDonadores = cantDonadores;
-    }
+	public void setCantDonadores(Integer cantDonadores) {
+		this.cantDonadores = cantDonadores;
+	}
 
-    public int getCantDonacionesPermit() {
-        return cantDonacionesPermit;
-    }
+	public Integer getCantDonacionesPermit() {
+		return cantDonacionesPermit;
+	}
 
-    public void setCantDonacionesPermit(int cantDonacionesPermit) {
-        this.cantDonacionesPermit = cantDonacionesPermit;
-    }
+	public void setCantDonacionesPermit(Integer cantDonacionesPermit) {
+		this.cantDonacionesPermit = cantDonacionesPermit;
+	}
 
-    public double getCantMaxDonador() {
-        return cantMaxDonador;
-    }
+	public Double getCantMaxDonador() {
+		return cantMaxDonador;
+	}
 
-    public void setCantMaxDonador(double cantMaxDonador) {
-        this.cantMaxDonador = cantMaxDonador;
-    }
+	public void setCantMaxDonador(Double cantMaxDonador) {
+		this.cantMaxDonador = cantMaxDonador;
+	}
 
-    public String getCampanaId() {
-        return campanaId;
-    }
+	public String getCampanaId() {
+		return campanaId;
+	}
 
-    public void setCampanaId(String campanaId) {
-        this.campanaId = campanaId;
-    }
+	public void setCampanaId(String campanaId) {
+		this.campanaId = campanaId;
+	}
+
+	public Double getCantMin() {
+		return cantMin;
+	}
+
+	public void setCantMin(Double cantMin) {
+		this.cantMin = cantMin;
+	}
+
+	public float getPorcentaje() {
+		return porcentaje;
+	}
+
+	public void setPorcentaje(float porcentaje) {
+		this.porcentaje = porcentaje;
+	}
+
     
-    
-	
 }

@@ -19,7 +19,7 @@ public class ParametrosCampanaRepoImpl implements ParametroCampanaRepo{
 
 	@Override
 	public boolean agregar(ParametrosCampanaDTO param) {
-		final String INSERT = "insert into parametros_campana (cant_donadores, cant_donaciones_permit, cant_max_donador, campana_id) values (?, ?, ?, ?)";
+		final String INSERT = "insert into parametros_campana (cant_donadores, cant_donaciones_permit, cant_max_donador, campana_id, cantMin, pocentaje_adm) values (?, ?, ?, ?, ?, ?)";
 		
 		try {
 			
@@ -28,6 +28,8 @@ public class ParametrosCampanaRepoImpl implements ParametroCampanaRepo{
 			psmt.setInt(2, param.getCantDonacionesPermit());
 			psmt.setDouble(3, param.getCantMaxDonador());
 			psmt.setString(4, param.getCampanaId());
+			psmt.setDouble(5, param.getCantMin());
+			psmt.setFloat(6, param.getPorcentaje());
 			
 			int rowsAfected = psmt.executeUpdate();
 			
@@ -45,7 +47,7 @@ public class ParametrosCampanaRepoImpl implements ParametroCampanaRepo{
 	@Override
 	public boolean actualizar(String campana, ParametrosCampanaDTO param) {
 		ParametrosCampanaDTO parametros = obtenerPorCampana(campana);
-		final String UPDATE = "update parametros_campana set cant_donadores = ?, cant_donaciones_permit = ?, cant_max_donador = ? where campana_id = ?";
+		final String UPDATE = "update parametros_campana set cant_donadores = ?, cant_donaciones_permit = ?, cant_max_donador = ?, cantMin = ?, pocentaje_adm = ? where campana_id = ?";
 		
 		if(parametros != null) {
 			
@@ -55,7 +57,9 @@ public class ParametrosCampanaRepoImpl implements ParametroCampanaRepo{
 				psmt.setInt(1, param.getCantDonadores());
 				psmt.setInt(2, param.getCantDonacionesPermit());
 				psmt.setDouble(3, param.getCantMaxDonador());
-				psmt.setString(4, parametros.getCampanaId());
+				psmt.setDouble(4, param.getCantMin());
+				psmt.setFloat(5, param.getPorcentaje());
+				psmt.setString(6, parametros.getCampanaId());
 				
 				int rowsAffected = psmt.executeUpdate();
 				if(rowsAffected > 0) {
@@ -88,6 +92,8 @@ public class ParametrosCampanaRepoImpl implements ParametroCampanaRepo{
 				parametros.setCantDonacionesPermit(rs.getInt("cant_donaciones_permit"));
 				parametros.setCantDonadores(rs.getInt("cant_donadores"));
 				parametros.setCantMaxDonador(rs.getDouble("cant_max_donador"));
+				parametros.setCantMin(rs.getDouble("cantMin"));
+				parametros.setPorcentaje(rs.getFloat("pocentaje_adm"));
 				
 				return parametros;
 			}

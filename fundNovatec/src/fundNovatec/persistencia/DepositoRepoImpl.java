@@ -137,13 +137,15 @@ public class DepositoRepoImpl implements DepositoRepo {
 
 	@Override
 	public List<DepositoDTO> listarPorPersona(String id) {
-		final String SELECT = "select * from deposito where persona_id = ?";
+		final String SELECT = "select * from deposito where persona_id = ? and estado_id = ?";
 		List<DepositoDTO> depositos = new ArrayList<>();
+		int codAct = EstadoRepoImpl.getCodActivo();
 		
 		try {
 			
 			psmt = CONN.prepareStatement(SELECT);
 			psmt.setString(1, id);
+			psmt.setInt(2, codAct);
 			
 			ResultSet rs = psmt.executeQuery();
 			

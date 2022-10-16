@@ -155,6 +155,27 @@ public class MonedaRepoImpl implements MonedaRepo{
 		return null;
 	}
 	
+	public boolean agregarCampMon(String camp, String mon) {
+		final String INSERT = "insert into campana_moneda (campana_id, moneda_iso) values (?, ?)";
+		
+		try {
+			
+			psmt = CONN.prepareStatement(INSERT);
+			psmt.setString(1, camp);
+			psmt.setString(2, mon);
+			
+			int rowsAfected = psmt.executeUpdate();
+			
+			if (rowsAfected > 0) {
+				return true;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("CampanaMoneda:agregar:Error -> "+e.getMessage());
+		}
+		
+		return false;
+	}
 	
 
 }

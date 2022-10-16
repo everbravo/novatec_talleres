@@ -22,7 +22,7 @@ public class CampanaRepoImpl implements CampanaRepo{
 
 	@Override
 	public boolean agregar(CampanaDTO campana) {
-		final String INSERT = "insert into campana (id_campana, nombre_campana, objetivo_campana, fundacion_nit, esatdo_id) values (?, ?, ?, ?, ?)";
+		final String INSERT = "insert into campana (id_campana, nombre_campana, objetivo_campana, fundacion_nit, estado_id) values (?, ?, ?, ?, ?)";
 		
 		try {
 			
@@ -76,7 +76,7 @@ public class CampanaRepoImpl implements CampanaRepo{
 	@Override
 	public boolean actualizar(String id, CampanaDTO campana) {
 		CampanaDTO camp = buscarPorId(id);
-		final String UPDATE = "update campana set nombre_campana = ?, objetivo_camapana = ? where id_campana = ?";
+		final String UPDATE = "update campana set nombre_campana = ?, objetivo_campana = ? where id_campana = ?";
 		
 		if(camp != null) {
 			
@@ -116,7 +116,7 @@ public class CampanaRepoImpl implements CampanaRepo{
 				CampanaDTO camp = new CampanaDTO();
 				camp.setEstado_id(rs.getInt("estado_id"));
 				camp.setFundacion_nit(rs.getString("fundacion_nit"));
-				camp.setIdCampana(rs.getString("id_camapana"));
+				camp.setIdCampana(rs.getString("id_campana"));
 				camp.setNombreCampana(rs.getString("nombre_campana"));
 				camp.setObjetivoCampana(rs.getString("objetivo_campana"));
 				
@@ -150,7 +150,7 @@ public class CampanaRepoImpl implements CampanaRepo{
 				CampanaDTO camp = new CampanaDTO();
 				camp.setEstado_id(rs.getInt("estado_id"));
 				camp.setFundacion_nit(rs.getString("fundacion_nit"));
-				camp.setIdCampana(rs.getString("id_camapana"));
+				camp.setIdCampana(rs.getString("id_campana"));
 				camp.setNombreCampana(rs.getString("nombre_campana"));
 				camp.setObjetivoCampana(rs.getString("objetivo_campana"));
 				
@@ -182,7 +182,7 @@ public class CampanaRepoImpl implements CampanaRepo{
 				CampanaDTO camp = new CampanaDTO();
 				camp.setEstado_id(rs.getInt("estado_id"));
 				camp.setFundacion_nit(rs.getString("fundacion_nit"));
-				camp.setIdCampana(rs.getString("id_camapana"));
+				camp.setIdCampana(rs.getString("id_campana"));
 				camp.setNombreCampana(rs.getString("nombre_campana"));
 				camp.setObjetivoCampana(rs.getString("objetivo_campana"));
 				
@@ -196,6 +196,93 @@ public class CampanaRepoImpl implements CampanaRepo{
 		return null;
 	}
 	
+	public List<CampanaDTO> listarTodoActivo() {
+		final String SELECT = "select * from campana where estado_id = ?";
+		List<CampanaDTO> campana = new ArrayList<>();
+		int idAct = EstadoRepoImpl.getCodActivo();
+		
+		try {
+			
+			psmt = CONN.prepareStatement(SELECT);
+			psmt.setInt(1, idAct);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				CampanaDTO camp = new CampanaDTO();
+				camp.setEstado_id(rs.getInt("estado_id"));
+				camp.setFundacion_nit(rs.getString("fundacion_nit"));
+				camp.setIdCampana(rs.getString("id_campana"));
+				camp.setNombreCampana(rs.getString("nombre_campana"));
+				camp.setObjetivoCampana(rs.getString("objetivo_campana"));
+				
+				campana.add(camp);
+				
+			}
+			
+			return campana;
+			
+		} catch (SQLException e) {
+			System.out.println("Campana:seleccionarTodoActivo:Error -> "+e.getMessage());
+		}
+		
+		return null;
+	}
 	
+	public List<CampanaDTO> listarTodoInscrito(String idPersona) {
+		final String SELECT = "select * from campana c join persona_campana pc on pc.campana_id = c.id_campana join persona p on pc.persona_id = p.identificacion where p.identificacion = ?";
+		List<CampanaDTO> campana = new ArrayList<>();
+		
+		try {
+			
+			psmt = CONN.prepareStatement(SELECT);
+			psmt.setString(1, idPersona);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				CampanaDTO camp = new CampanaDTO();
+				camp.setEstado_id(rs.getInt("estado_id"));
+				camp.setFundacion_nit(rs.getString("fundacion_nit"));
+				camp.setIdCampana(rs.getString("id_campana"));
+				camp.setNombreCampana(rs.getString("nombre_campana"));
+				camp.setObjetivoCampana(rs.getString("objetivo_campana"));
+				
+				campana.add(camp);
+				
+			}
+			
+			return campana;
+			
+		} catch (SQLException e) {
+			System.out.println("Campana:seleccionarTodoPersonaCamp:Error -> "+e.getMessage());
+		}
+		
+		return null;
+	}
+	
+	public boolean agregarCampDon(String camp, String ident) {
+		final String INSERT = "insert into persona_campana (campana_id, persona_id) values (?, ?)";
+		
+		try {
+			
+			psmt = CONN.prepareStatement(INSERT);
+			psmt.setString(1, camp);
+			psmt.setString(2, ident);
+			
+			int rowsAfected = psmt.executeUpdate();
+			
+			if (rowsAfected > 0) {
+				return true;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("CampanaPersona:agregar:Error -> "+e.getMessage());
+		}
+		
+		return false;
+	}
 
 }

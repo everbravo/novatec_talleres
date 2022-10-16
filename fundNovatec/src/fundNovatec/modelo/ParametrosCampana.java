@@ -12,6 +12,10 @@ public class ParametrosCampana {
     
     private double cantMaxDonador;
     
+    private float porcentaje;
+    
+    private Double cantMin;
+    
     private String campanaId;
     
     private Campana campana;
@@ -20,11 +24,13 @@ public class ParametrosCampana {
         this.campanaId = campanaId;
     }
 
-    public ParametrosCampana(String campanaId, int cantDonadores, int cantDonacionesPermit, double cantMaxDonador) {
+    public ParametrosCampana(String campanaId, int cantDonadores, int cantDonacionesPermit, double cantMaxDonador, float porcentaje, Double cantMin) {
         this.campanaId = campanaId;
         this.cantDonadores = cantDonadores;
         this.cantDonacionesPermit = cantDonacionesPermit;
         this.cantMaxDonador = cantMaxDonador;
+        this.cantMin = cantMin;
+        this.porcentaje = porcentaje;
     }
 
     public int getCantDonadores() {
@@ -66,5 +72,23 @@ public class ParametrosCampana {
     public void setCampana(Campana campana) {
         this.campana = campana;
     }
+
+	public float getPorcentaje() {
+		return porcentaje;
+	}
+
+	public void setPorcentaje(float porcentaje) {
+		this.porcentaje = porcentaje;
+	}
+
+	public Double getCantMin() {
+		return cantMin;
+	}
+
+	public void setCantMin(Double cantMin) {
+		this.cantMin = cantMin;
+	}
+    
+    
 
 }
