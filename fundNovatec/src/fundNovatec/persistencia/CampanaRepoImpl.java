@@ -166,6 +166,31 @@ public class CampanaRepoImpl implements CampanaRepo{
 		
 		return null;
 	}
+	
+	public List<String> listarCampMon(String id) {
+		final String SELECT = "select * from campana_moneda where campana_id = ?";
+		List<String> monedas = new ArrayList<>();
+		
+		try {
+			
+			psmt = CONN.prepareStatement(SELECT);
+			psmt.setString(1, id);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				monedas.add(rs.getString("moneda_iso"));
+				
+			}
+			
+			return monedas;
+			
+		} catch (SQLException e) {
+			System.out.println("CampanaMoned:listarId:Error -> "+e.getMessage());
+		}
+		
+		return null;
+	}
 
 	@Override
 	public CampanaDTO buscarPorId(String id) {
@@ -194,6 +219,153 @@ public class CampanaRepoImpl implements CampanaRepo{
 		}
 		
 		return null;
+	}
+	
+	public boolean inscVerCantDonantes(String campana) {
+		String QUERY_CANTDONADORES = "select count(pc.persona_id) as cant_inscrita, par.cant_donadores as cant_permit from parametros_campana par "
+				+ "join campana c on par.campana_id = id_campana "
+				+ "join persona_campana pc on c.id_campana = pc.campana_id where c.id_campana = ?";
+		try {
+			
+			psmt = CONN.prepareStatement(QUERY_CANTDONADORES);
+			psmt.setString(1, campana);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				int cantNow = rs.getInt("cant_inscrita");
+				int cantPermit = rs.getInt("cant_permit");
+				int cantBefore = (cantNow + 1);
+				
+				return cantPermit >= cantBefore;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Campana:verificarPlazasDisponiblesInscripcion:Error -> "+e.getMessage());
+		}
+		
+		return false;
+	}
+	
+	public int cnatTotalDonantesCamp(String campana) {
+		String QUERY_CANTDONADORES = "select count(persona_id) as cant_inscrita from persona_campana "
+				+ "where campana_id = ?";
+		try {
+			
+			psmt = CONN.prepareStatement(QUERY_CANTDONADORES);
+			psmt.setString(1, campana);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				int cantNow = rs.getInt("cant_inscrita");
+				
+				return cantNow;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Campana:cnatTotalDonantesCamp:Error -> "+e.getMessage());
+		}
+		
+		return 0;
+	}
+	
+	public int cnatTotalDonacionesCamp(String campana) {
+		String QUERY_CANTDONADORES = "select count(deposito_cod) as cant_dona from movimiento "
+				+ "where campana_id = ?";
+		try {
+			
+			psmt = CONN.prepareStatement(QUERY_CANTDONADORES);
+			psmt.setString(1, campana);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				int cantNow = rs.getInt("cant_dona");
+				
+				return cantNow;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Campana:cnatTotalDonacionesCamp:Error -> "+e.getMessage());
+		}
+		
+		return 0;
+	}
+	
+	public double montMaxDonadoCamp(String campana) {
+		String QUERY_CANTDONADORES = "select max(valor) as max_value from movimiento "
+				+ "where campana_id = ?";
+		try {
+			
+			psmt = CONN.prepareStatement(QUERY_CANTDONADORES);
+			psmt.setString(1, campana);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				double cantNow = rs.getInt("max_value");
+				
+				return cantNow;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Campana:montMaxDonadoCamp:Error -> "+e.getMessage());
+		}
+		
+		return 0D;
+	}
+	
+	public boolean inscVerCantDonacionesRealizadas(String campana) {
+		String QUERY_CANTDONACIONES = "select count(m.campana_id) as cant_donaciones, par.cant_donaciones_permit as cant_donac_permit from parametros_campana par "
+				+ "join campana c on par.campana_id = id_campana "
+				+ "join movimiento m on c.id_campana = m.campana_id where c.id_campana = ?";
+		try {
+			
+			psmt = CONN.prepareStatement(QUERY_CANTDONACIONES);
+			psmt.setString(1, campana);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				int cantNow = rs.getInt("cant_donaciones");
+				int cantPermit = rs.getInt("cant_donac_permit");
+				int cantBefore = (cantNow + 1);
+				
+				return cantPermit >= cantBefore;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Campana:verificarDonacionesDisponibles:Error -> "+e.getMessage());
+		}
+		
+		return false;
+	}
+	
+	public boolean inscVerCantMaximaDonador(String campana, Double cant) {
+		String QUERY_MAXDONADOR = "select sum(m.valor) as cant_donacion_per, par.cant_max_donador as cant_max_permit_donador from parametros_campana par "
+				+ "join campana c on par.campana_id = id_campana "
+				+ "join movimiento m on c.id_campana = m.campana_id where c.id_campana = ?";
+		try {
+			
+			psmt = CONN.prepareStatement(QUERY_MAXDONADOR);
+			psmt.setString(1, campana);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				Double cantNow = rs.getDouble("cant_donacion_per");
+				Double cantPermit = rs.getDouble("cant_max_permit_donador");
+				Double cantBefore = (cantNow + cant);
+				
+				return cantPermit >= cantBefore;
+			}
+			
+		} catch (SQLException e) {
+			System.out.println("Campana:verificarCantidadMaximaDonador:Error -> "+e.getMessage());
+		}
+		
+		return false;
 	}
 	
 	public List<CampanaDTO> listarTodoActivo() {
@@ -284,5 +456,6 @@ public class CampanaRepoImpl implements CampanaRepo{
 		
 		return false;
 	}
+	
 
 }

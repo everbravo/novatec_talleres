@@ -15,6 +15,7 @@ import fundNovatec.dto.PersonaDTO;
 import fundNovatec.reporte.PersonaDonadorPtllDTO;
 import fundNovatec.repositorio.PersonaRepo;
 
+@SuppressWarnings("unused")
 public class PersonaRepoImpl implements PersonaRepo{
 
 	private final static Connection CONN = Conexion.getConexion();
@@ -170,15 +171,15 @@ public class PersonaRepoImpl implements PersonaRepo{
 	}
 
 	@Override
-	public List<PersonaDonadorPtllDTO> generarReporteDonacion(String cedula, LocalDate fecha1, LocalDate fecha2) {
+	public List<PersonaDonadorPtllDTO> generarReporteDonacion(String cedula) {
 		
 		final String QUERY = "select p.nombre as nombre, p.apellidos as apellido, ru.descripcion as rol, "
 				+ "m.valor as val, m.fecha_mov as fmov, c.nombre_campana as ncamp, c.objetivo_campana as objcamp, c.id_campana as campid "
 				+ "from persona p join rol_usuario ru on ru.id_rol = p.rol_usuario "
-				+ "join deposito d on ? = d.persona_id "
+				+ "join deposito d on p.identificacion = d.persona_id "
 				+ "join movimiento m on d.codigo_deposito = m.deposito_cod "
 				+ "join campana c on m.campana_id = c.id_campana "
-				+ "where (m.fecha_mov between ? and ?) ";
+				+ "where p.identificacion = ? ";
 		
 		PersonaDTO donador = obtenerPorIdentificacion(cedula);
 		if(donador != null) {
@@ -189,8 +190,6 @@ public class PersonaRepoImpl implements PersonaRepo{
 				
 				psmt = CONN.prepareStatement(QUERY);
 				psmt.setString(1, cedula);
-				psmt.setDate(2, Date.valueOf(fecha1));
-				psmt.setDate(3, Date.valueOf(fecha2));
 				
 				ResultSet rs = psmt.executeQuery();
 				

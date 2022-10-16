@@ -14,6 +14,7 @@ import fundNovatec.controlador.ControladorParametros;
 import fundNovatec.dto.MovimientoDTO;
 import fundNovatec.repositorio.MovimientoRepo;
 
+@SuppressWarnings("unused")
 public class MovimientoRepoImpl implements MovimientoRepo{
 
 	private final static Connection CONN = Conexion.getConexion();

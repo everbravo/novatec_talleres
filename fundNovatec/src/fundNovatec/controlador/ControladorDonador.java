@@ -3,6 +3,7 @@ package fundNovatec.controlador;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.DoubleStream;
@@ -21,7 +22,10 @@ import fundNovatec.persistencia.MonedaRepoImpl;
 import fundNovatec.persistencia.MovimientoRepoImpl;
 import fundNovatec.persistencia.PersonaRepoImpl;
 import fundNovatec.persistencia.UsuarioRepoImpl;
+import fundNovatec.reporte.PersonaDonadorPtllDTO;
+import fundNovatec.reporte.ToCsv;
 
+@SuppressWarnings("unused")
 public class ControladorDonador {
 
 	private final static Scanner SC = new Scanner(System.in); 
@@ -128,6 +132,7 @@ public class ControladorDonador {
 		
 		String opciones = "MENÚ CAMPAÑAS\n"
 				+ "1 -> Unirse a campaña\n"
+				+ "2 -> Donar a campaña\n"
 				+ "0 -> Salir";
 		
 		boolean confirma = true;
@@ -141,6 +146,9 @@ public class ControladorDonador {
 			case "1":
 				listarCampanasActivas();
 				ingresarACampana(id);
+				break;
+			case "2":
+				donarACampana(id);
 				break;
 			case "0":
 				confirma = false;
@@ -159,19 +167,96 @@ public class ControladorDonador {
 				String mon = SC.nextLine().trim();
 				
 				if(mon!="") {
-					CampanaDTO find = CAMP.buscarPorId(mon);
-					if(find != null) {
-						boolean resp = CAMP.agregarCampDon(mon, id);
-						if(resp) {
-							System.out.println("Se acaba de inscribir en la campaña");
+					
+					boolean repuest = CAMP.inscVerCantDonantes(id);
+					if(repuest) {
+						CampanaDTO find = CAMP.buscarPorId(mon);
+						if(find != null) {
+							boolean resp = CAMP.agregarCampDon(mon, id);
+							if(resp) {
+								System.out.println("Se acaba de inscribir en la campaña");
+							}else {
+								System.out.println("Error interno al inscribir en la campaña");
+							}
 						}else {
-							System.out.println("Error interno al inscribir en la campaña");
+							System.out.println("no se encontró la moneda");
 						}
 					}else {
-						System.out.println("no se encontró la moneda");
+						System.out.println("Cupos maximos de campaña fueron alcanzados...");
 					}
+					
 				}
 			
+	}
+
+	
+	public static void donarACampana(String id) {
+		listarCampanasInscrito(id);
+		System.out.println("Ingrese el codigo de la campaña*: ");
+		String camp = SC.nextLine().trim();
+		obtenerMonedasCampanaPermit(camp, id);
+		System.out.println("Ingrese el codigo del fondo a debitar*: ");
+		String fond = SC.nextLine().trim();
+		
+		boolean vrf1 = CAMP.inscVerCantDonacionesRealizadas(camp);
+		if(vrf1) {
+			if(camp!="" && fond !="") {
+				CampanaDTO find = CAMP.buscarPorId(camp);
+				if(find.getEstado_id() == EstadoRepoImpl.getCodInactivo()) {
+					System.out.println("La campaña se encuentra inhabilitada...");
+					accionesCampaña(id);
+				}
+				DepositoDTO dep = DEP.buscarPorId(fond);
+				if(find != null && dep != null) {
+					
+					System.out.println("Ingrese la cantidad que desea donar*: ");
+					Double cant = Double.valueOf(SC.nextLine().trim());
+					
+					boolean vrf2 = CAMP.inscVerCantMaximaDonador(camp, cant);
+					if(vrf2) {
+						if (!cant.isNaN()) {
+							boolean sobregiro = verificarSobregiro(dep.getSaldo(), cant);	
+							if(sobregiro == false) {
+								Double saldoNow = dep.getSaldo()-cant;
+								dep.setSaldo(saldoNow);
+								boolean exitoDep = DEP.actualizar(dep.getCodigoDeposito(), dep);
+								if(saldoNow == 0D) {
+									DEP.eliminar(fond);
+								}
+								if(exitoDep) {
+									MovimientoDTO mov = new MovimientoDTO();
+									mov.setCampanaId(find.getIdCampana());
+									mov.setDeposito_cod(dep.getCodigoDeposito());
+									mov.setValor(cant);
+									mov.setEstado_id(EstadoRepoImpl.getCodEst("DONACION"));
+									boolean exitoMov = MOV.agregar(mov);
+									if(exitoMov) {
+										System.out.println("Donación realizada, Gracias por confiar en nosotros...");
+									}
+								}
+							}else {
+								System.out.println("Esta cuenta no tiene los fondos suficientes para realizar la transacción");
+							}
+						}
+					}else {
+						System.out.println("Se alcanzó el monto maximo establecidode donacion por usuario");
+					}
+					}
+			}else {
+				System.out.println("Ingrese los campos requeridos");
+			}
+		}else {
+			System.out.println("Se alcanzo el maximo de donaciones para esta campaña");
+			//establecer en inactiva la campaña
+			CAMP.eliminar(camp, EstadoRepoImpl.getCodInactivo());
+		}
+		
+		
+	
+	}
+	
+	public static boolean verificarSobregiro(Double valorCuent, Double valorDeb ) {
+		return (valorCuent >= ((valorDeb < 0)?-valorDeb:valorDeb)) ? false : true;
 	}
 	
 	public static void listarCampanasActivas() {
@@ -290,6 +375,12 @@ public class ControladorDonador {
 		DEP.listarPorPersona(perId).stream().forEach(x->System.out.println(x.getCodigoDeposito()+" -- saldo de --> "+x.getSaldo()+x.getMonedaCod()+" -- a COP -->"+convertirACop(x.getSaldo(), x.getMonedaCod())));
 	}
 	
+	public static void obtenerMonedasCampanaPermit(String camp, String idper) {
+		List<String> monedas = CAMP.listarCampMon(camp);
+		System.out.println("Cuentas permitidas por tipo de moneda");
+		DEP.listarPorPersona(idper).stream().filter(x-> monedas.contains(x.getMonedaCod())).forEach(z->System.out.println(z.getCodigoDeposito()+" -- saldo de --> "+z.getSaldo()+z.getMonedaCod()+" -- a COP -->"+convertirACop(z.getSaldo(), z.getMonedaCod())));
+	}
+	
 	public static Double convertirACop(Double valor, String moneda) {
 		Double result = 0D;
 		
@@ -302,6 +393,36 @@ public class ControladorDonador {
 		return result;
 	}
 	
+	
+	public static void emitirDocumentoDonante(String id) {
+		List<PersonaDonadorPtllDTO> persona = PER.generarReporteDonacion(id);
+		ToCsv generarCsv = new ToCsv();
+		generarCsv.toCsv(persona);
+	}
+	
+	public static void reversarFondos(String idPersona) {
+		PersonaDTO per = PER.obtenerPorIdentificacion(idPersona);
+		if(per != null) {
+			List<DepositoDTO> depositos = DEP.listarPorPersona(per.getIdentificacion());
+			if(!depositos.isEmpty()) {
+				for(DepositoDTO dep : depositos) {
+					Double saldoOld = dep.getSaldo();
+					dep.setSaldo(0D);
+					boolean act = DEP.actualizar(dep.getCodigoDeposito(), dep);
+					if(act) {
+						MovimientoDTO mov = new MovimientoDTO();
+						mov.setDeposito_cod(dep.getCodigoDeposito());
+						mov.setValor(saldoOld);
+						mov.setEstado_id(EstadoRepoImpl.getCodEst("RETORNO"));
+						boolean exitoMov = MOV.agregar(mov);
+						if(exitoMov) {
+							System.out.println("Retorno de dinero para la cuenta: "+dep.getCodigoDeposito() +" por concepto de: "+saldoOld+dep.getMonedaCod()+" - Aprobado");
+						}
+					}
+				}
+			}
+		}
+	}
 	
 	public static void crearDeposito(String perId) {
 		String codiDep = "";

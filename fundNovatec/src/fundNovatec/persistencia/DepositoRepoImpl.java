@@ -170,5 +170,40 @@ public class DepositoRepoImpl implements DepositoRepo {
 		
 		return null;
 	}
+	
+	public List<DepositoDTO> listarPorPersonaCampana(String id, List<String> monedaCamp) {
+		final String SELECT = "select * from deposito where persona_id = ? and estado_id = ?";
+		List<DepositoDTO> depositos = new ArrayList<>();
+		int codAct = EstadoRepoImpl.getCodActivo();
+		
+		try {
+			
+			psmt = CONN.prepareStatement(SELECT);
+			psmt.setString(1, id);
+			psmt.setInt(2, codAct);
+			
+			ResultSet rs = psmt.executeQuery();
+			
+			while(rs.next()) {
+				
+				DepositoDTO dposito = new DepositoDTO();
+				dposito.setCodigoDeposito(rs.getString("codigo_deposito"));
+				dposito.setEstadoId(rs.getInt("estado_id"));
+				dposito.setMonedaCod(rs.getString("moneda_cod"));
+				dposito.setPersonaId(rs.getString("persona_id"));
+				dposito.setSaldo(rs.getDouble("saldo"));
+				
+				depositos.add(dposito);
+				
+			}
+			
+			return depositos;
+			
+		} catch (SQLException e) {
+			System.out.println("Deposito:listarPersona:Error -> "+e.getMessage());
+		}
+		
+		return null;
+	}
 
 }

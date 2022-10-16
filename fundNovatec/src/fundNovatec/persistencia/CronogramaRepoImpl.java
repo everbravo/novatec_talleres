@@ -72,7 +72,7 @@ public class CronogramaRepoImpl implements CronogramaRepo{
 
 	@Override
 	public CronogramaDTO obtenerPorCampana(String campana) {
-		final String FIND = "select * from campana where campana_id = ?";
+		final String FIND = "select * from cronograma where campana_id = ?";
 		
 		try {
 			

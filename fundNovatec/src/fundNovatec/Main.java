@@ -4,6 +4,7 @@ import fundNovatec.controlador.ControladorAdministrador;
 import fundNovatec.controlador.ControladorDonador;
 import fundNovatec.controlador.ControladorParametros;
 
+@SuppressWarnings("unused")
 public class Main {
 
 	public static void main(String[] args) {
@@ -16,7 +17,10 @@ public class Main {
 		//ControladorParametros.iniciarSesion();
 		//ControladorDonador.accionesDeposito("21343534");
 		//ControladorAdministrador.registrarCampana("87432567-2");
-		ControladorDonador.accionesCampaña("21343534");
+		//ControladorDonador.accionesCampaña("21343534");
+		//ControladorAdministrador.reporteCampana("@@Qw)");
+		//ControladorDonador.emitirDocumentoDonante("21343534");
+		//ControladorDonador.reversarFondos("21343534");
 		
 	}
 

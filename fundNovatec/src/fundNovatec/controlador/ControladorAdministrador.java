@@ -4,6 +4,7 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
+import java.util.stream.DoubleStream;
 
 import fundNovatec.dto.CampanaDTO;
 import fundNovatec.dto.CronogramaDTO;
@@ -19,6 +20,7 @@ import fundNovatec.persistencia.ParametrosCampanaRepoImpl;
 import fundNovatec.persistencia.PersonaRepoImpl;
 import fundNovatec.persistencia.UsuarioRepoImpl;
 
+@SuppressWarnings("unused")
 public class ControladorAdministrador {
 
 	public ControladorAdministrador() {
@@ -129,6 +131,53 @@ public class ControladorAdministrador {
 		}
 		
 		
+	}
+	
+	public static void reporteCampana(String idCamp) {
+		CampanaDTO campana = CAMP.buscarPorId(idCamp);
+		if(campana != null) {
+			ParametrosCampanaDTO params = PARAM.obtenerPorCampana(campana.getIdCampana());
+			CronogramaDTO cronog = CRON.obtenerPorCampana(campana.getIdCampana());
+			//info de la campaña
+			System.out.println("INFORMACION GENERAL DE CAMPAÑA COD |"+idCamp+"|");
+			System.out.println("Nombre: "+campana.getNombreCampana()+"\n"
+					+ "Objetivo: "+campana.getObjetivoCampana()+"\n"
+							+ "Estado: "+EST.buscarPorId(campana.getEstado_id()).getDescripcion()+"\t"
+									+ "Fecha Inicio: "+cronog.getFechaInicio()+" - Fecha Fin: "+cronog.getFechaFin()+"\n"
+											+ "Cantidad donantes permitidos: "+params.getCantDonadores()+" - Cantidad donantes inscritos: "+CAMP.cnatTotalDonantesCamp(campana.getIdCampana())+"\n"
+													+ "Cantidad donaciones permitidas: "+params.getCantDonacionesPermit()+" - Cantidad donaciones realizadas: "+CAMP.cnatTotalDonacionesCamp(campana.getIdCampana())+"\n"
+															+ "Monto maximo x donador: "+params.getCantMaxDonador()+" - Monto maximo donado (usuario): "+ CAMP.montMaxDonadoCamp(campana.getIdCampana())+"\n"
+																	+ "Monedas Permitidas: "+CAMP.listarCampMon(campana.getIdCampana())+"\n");
+			
+			
+			Double total = Math.round((params.getCantMin() * params.getPorcentaje()) * 100.0)/100.0;
+			Double totalRecaudado = MOV.listarPorCampana(campana.getIdCampana()).stream().flatMapToDouble(x -> DoubleStream.of(x.getValor())).sum();
+			float porcentajeAjust =calcularPorcentajeAdmin(params.getCantMin(), totalRecaudado, params.getPorcentaje());
+			System.out.println("--------------------ESTIMADO PRE-CAMPAÑA -------------------");
+			System.out.println("El porcentaje administrativo inical del campaña fue: "+params.getPorcentaje()+"% o ["+Math.round(params.getPorcentaje()*100 * 100.0)/100.0+"%]");
+			System.out.println("El monto minimo estimado de recaudo fue: $ "+params.getCantMin()+" COP");
+			System.out.println("El gasto ADMINISTRATIVO estimado para la campaña fue: $ "+total+" COP\n");
+			System.out.println("--------------------CALCULADO POST-CAMPAÑA -------------------");
+			calcularGastosAdmin(totalRecaudado, Math.round(porcentajeAjust * 100.0f)/100.0f);
+			
+		}else {
+			System.out.println("Error al encontrar la campaña");
+		}
+	}
+	
+	public static float calcularPorcentajeAdmin(Double canEst, Double cantObt, float porcIni) {
+		if(cantObt >= canEst) {
+			return porcIni;
+		}else {
+			return (float) ((float) (cantObt * porcIni) / canEst);
+		}
+	}
+	
+	public static void calcularGastosAdmin(Double recaudo, float porcentaje) {
+		Double total = Math.round((recaudo * porcentaje) * 100.0)/100.0;
+		System.out.println("El total de dinero recaudado durante la campaña fue de: $ "+recaudo+" COP");
+		System.out.println("El porcentaje administrativo (variacional) aplicado es: "+porcentaje+"% o ["+porcentaje*100+"%]");
+		System.out.println("El gasto ADMINISTRATIVO recaudado para la campaña es de: $ "+total+" COP");
 	}
 	
 	public static void asociarMonedas(String camp) {
