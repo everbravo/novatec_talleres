@@ -4,7 +4,9 @@ import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.util.stream.DoubleStream;
 
@@ -412,19 +414,33 @@ public class ControladorDonador {
 			List<DepositoDTO> depositos = DEP.listarPorPersona(per.getIdentificacion());
 			if(!depositos.isEmpty()) {
 				for(DepositoDTO dep : depositos) {
+					Map<String, Double> calculos = calculosReversarF(dep.getCodigoDeposito());
+					Double valorRetenido = calculos.get("RET");
+					Double valorRetornado = calculos.get("REV");
+					
 					Double saldoOld = dep.getSaldo();
 					dep.setSaldo(0D);
+					
 					boolean act = DEP.actualizar(dep.getCodigoDeposito(), dep);
 					boolean act2 = DEP.eliminar(dep.getCodigoDeposito());
 					if(act && act2) {
 						perInact = PER.inactivar(per.getIdentificacion(), EstadoRepoImpl.getCodInactivo());
-						MovimientoDTO mov = new MovimientoDTO();
-						mov.setDeposito_cod(dep.getCodigoDeposito());
-						mov.setValor(saldoOld);
-						mov.setEstado_id(EstadoRepoImpl.getCodEst("RETORNO"));
-						boolean exitoMov = MOV.agregar(mov);
-						if(exitoMov) {
-							System.out.println("Retorno de dinero para la cuenta: "+dep.getCodigoDeposito() +" por concepto de: "+saldoOld+dep.getMonedaCod()+" - Aprobado");
+						
+						MovimientoDTO movRev = new MovimientoDTO();
+						movRev.setDeposito_cod(dep.getCodigoDeposito());
+						movRev.setValor(valorRetornado);
+						movRev.setEstado_id(EstadoRepoImpl.getCodEst("RETORNO"));
+						
+						MovimientoDTO movRet = new MovimientoDTO();
+						movRet.setDeposito_cod(dep.getCodigoDeposito());
+						movRet.setValor(valorRetenido);
+						movRet.setEstado_id(EstadoRepoImpl.getCodEst("RETENCION"));
+						
+						boolean exitoMovRv = MOV.agregar(movRev);
+						boolean exitoMovRt = MOV.agregar(movRet);
+						if(exitoMovRv && exitoMovRt) {
+							System.out.println("Retorno de dinero para la cuenta: "+dep.getCodigoDeposito() +" por concepto de: "+valorRetornado+dep.getMonedaCod()+" - Aprobado");
+							System.out.println("Retencion de dinero para la cuenta: "+dep.getCodigoDeposito() +" por concepto de: "+valorRetenido+dep.getMonedaCod()+" - Aprobado");
 						}
 					}
 					
@@ -435,6 +451,33 @@ public class ControladorDonador {
 			}
 		}
 	}
+	
+	public static Map<String, Double> calculosReversarF(String idDeposito) {
+		
+		Map<String, Double> reverso = new HashMap<>();
+		DepositoDTO deposi = DEP.buscarPorId(idDeposito);
+		MonedaDTO moneda = MON.buscarPorId(deposi.getMonedaCod());
+		Double saldoActual = deposi.getSaldo();
+		List<MovimientoDTO> movCuent = MOV.listarPorDeposito(deposi.getCodigoDeposito());
+		if(movCuent.isEmpty()) {
+			reverso.put("REV", saldoActual);
+			reverso.put("RET", 0D);
+		}else {
+			Double dineroDonado = (movCuent.stream().flatMapToDouble(x -> DoubleStream.of(x.getValor())).sum()) / moneda.getTasaConversionCop();
+			
+			Double porcentajeDes = (saldoActual /dineroDonado);
+			
+			Double reten = Math.round((porcentajeDes * saldoActual)*100)/100D;
+			Double rDon = Math.round((saldoActual - reten)*100)/100D;
+			
+			reverso.put("REV", rDon);
+			reverso.put("RET", reten);
+		}
+		
+		
+		return reverso;
+	}
+	
 	
 	public static void crearDeposito(String perId) {
 		String codiDep = "";

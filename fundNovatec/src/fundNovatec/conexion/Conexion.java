@@ -8,7 +8,7 @@ public class Conexion {
 
 	private static Connection conn = null;
 	
-	private final String DBURL = "jdbc:mysql://localhost:3306/fproject2";
+	private final String DBURL = "jdbc:mysql://localhost:3306/fproject2?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
 	
 	private final String USERNAME = "root";
 	
