@@ -235,8 +235,10 @@ public class CampanaRepoImpl implements CampanaRepo{
 			while(rs.next()) {
 				int cantNow = rs.getInt("cant_inscrita");
 				int cantPermit = rs.getInt("cant_permit");
+				if(cantPermit == 0) {
+					return true;
+				}
 				int cantBefore = (cantNow + 1);
-				
 				return cantPermit >= cantBefore;
 			}
 			
@@ -330,6 +332,7 @@ public class CampanaRepoImpl implements CampanaRepo{
 			while(rs.next()) {
 				int cantNow = rs.getInt("cant_donaciones");
 				int cantPermit = rs.getInt("cant_donac_permit");
+				if(cantPermit == 0) return true;
 				int cantBefore = (cantNow + 1);
 				
 				return cantPermit >= cantBefore;
@@ -356,8 +359,9 @@ public class CampanaRepoImpl implements CampanaRepo{
 			while(rs.next()) {
 				Double cantNow = rs.getDouble("cant_donacion_per");
 				Double cantPermit = rs.getDouble("cant_max_permit_donador");
+				if (cantPermit == 0D) return true;
 				Double cantBefore = (cantNow + cant);
-				
+				System.out.println("ss "+cantPermit);
 				return cantPermit >= cantBefore;
 			}
 			

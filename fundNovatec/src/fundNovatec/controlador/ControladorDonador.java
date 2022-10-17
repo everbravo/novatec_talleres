@@ -169,7 +169,7 @@ public class ControladorDonador {
 				
 				if(mon!="") {
 					
-					boolean repuest = CAMP.inscVerCantDonantes(id);
+					boolean repuest = CAMP.inscVerCantDonantes(mon);
 					if(repuest) {
 						CampanaDTO find = CAMP.buscarPorId(mon);
 						if(find != null) {
@@ -240,7 +240,7 @@ public class ControladorDonador {
 							}
 						}
 					}else {
-						System.out.println("Se alcanzó el monto maximo establecidode donacion por usuario");
+						System.out.println("Se alcanzó el monto maximo establecido de donacion por usuario");
 					}
 					}
 			}else {
