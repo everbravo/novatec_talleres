@@ -60,7 +60,8 @@ public class ControladorDonador {
 		
 		System.out.println("Ingrese el codigo correspondiente a su sexo: ");
 		OperacionesPersonalizadas.desplegarSexos();
-		int id_sexo = Integer.parseInt(SC.nextLine().trim());
+		String tempV = SC.nextLine().trim();
+		int id_sexo = (tempV.isEmpty())? 0 :Integer.parseInt(tempV);
 		
 		int rol = OperacionesPersonalizadas.getRolUsuario();
 		
@@ -74,25 +75,25 @@ public class ControladorDonador {
 		System.out.println("Ingrese su contraseña: ");
 		String password = SC.nextLine().trim();
 		
-		PersonaDTO p = new PersonaDTO();
-		p.setIdentificacion(identificacion);
-		p.setNombre(nombre);
-		p.setApellidos(apellidos);
-		p.setNacimiento(Date.valueOf(fecha_nacimiento));
-		p.setSexo_id(id_sexo);
-		p.setRol_usuario(rol);
-		p.setFn_nit(id_fund);
-		
-		UsuarioDTO u = new UsuarioDTO();
-		u.setNameuser(nameuser);
-		u.setPassword(password);
-		u.setPersonaId(p.getIdentificacion());
 		
 		if(identificacion == "" || nombre == "" || apellidos == "" || fecha_nacimiento == null 
 				|| id_sexo == -1 || rol == -1 || id_fund == "" || nameuser == "" || password == "") {
-			System.out.println("Todos los campos consultados son requeridos por el proceso, ingreselos nuevamente...");
-			registrarDonador();
+			System.out.println("Todos los campos consultados son requeridos por el proceso, ingreselos nuevamente...\n\n");
 		}else {
+			
+			PersonaDTO p = new PersonaDTO();
+			p.setIdentificacion(identificacion);
+			p.setNombre(nombre);
+			p.setApellidos(apellidos);
+			p.setNacimiento(Date.valueOf(fecha_nacimiento));
+			p.setSexo_id(id_sexo);
+			p.setRol_usuario(rol);
+			p.setFn_nit(id_fund);
+			
+			UsuarioDTO u = new UsuarioDTO();
+			u.setNameuser(nameuser);
+			u.setPassword(password);
+			u.setPersonaId(p.getIdentificacion());
 			
 			boolean registro = PER.agregar(p);
 			boolean userok = USER.agregar(u);
@@ -281,6 +282,7 @@ public class ControladorDonador {
 				+ "2 -> Eliminar fondo\n"
 				/*+ "3 -> Editar Deposito\n"*/
 				+ "3 -> Solicitar Activación de Cuenta\n"
+				+ "4 -> Solicitar Informe de donaciones (Solo para usuarios con antiguedad)"
 				+ "0 -> Salir";
 		
 		
@@ -305,6 +307,9 @@ public class ControladorDonador {
 				break;
 			case "3":
 				solicitarActivacion(perId);
+				break;
+			case "4":
+				emitirDocumentoDonante(perId);
 				break;
 			case "0":
 				confirma = false;
@@ -403,13 +408,16 @@ public class ControladorDonador {
 	public static void reversarFondos(String idPersona) {
 		PersonaDTO per = PER.obtenerPorIdentificacion(idPersona);
 		if(per != null) {
+			boolean perInact = false;
 			List<DepositoDTO> depositos = DEP.listarPorPersona(per.getIdentificacion());
 			if(!depositos.isEmpty()) {
 				for(DepositoDTO dep : depositos) {
 					Double saldoOld = dep.getSaldo();
 					dep.setSaldo(0D);
 					boolean act = DEP.actualizar(dep.getCodigoDeposito(), dep);
-					if(act) {
+					boolean act2 = DEP.eliminar(dep.getCodigoDeposito());
+					if(act && act2) {
+						perInact = PER.inactivar(per.getIdentificacion(), EstadoRepoImpl.getCodInactivo());
 						MovimientoDTO mov = new MovimientoDTO();
 						mov.setDeposito_cod(dep.getCodigoDeposito());
 						mov.setValor(saldoOld);
@@ -419,6 +427,10 @@ public class ControladorDonador {
 							System.out.println("Retorno de dinero para la cuenta: "+dep.getCodigoDeposito() +" por concepto de: "+saldoOld+dep.getMonedaCod()+" - Aprobado");
 						}
 					}
+					
+				}
+				if(perInact) {
+					System.out.println("Debido a que su cuenta no posee fondos su usuario queda temporalmente INACTIVO");
 				}
 			}
 		}

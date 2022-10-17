@@ -11,6 +11,7 @@ import fundNovatec.dto.MonedaDTO;
 import fundNovatec.dto.PersonaDTO;
 import fundNovatec.dto.RolUsuarioDTO;
 import fundNovatec.dto.SexoDTO;
+import fundNovatec.persistencia.CampanaRepoImpl;
 import fundNovatec.persistencia.EstadoRepoImpl;
 import fundNovatec.persistencia.FundacionRepoImpl;
 import fundNovatec.persistencia.MonedaRepoImpl;
@@ -27,6 +28,7 @@ public class ControladorParametros {
 	private final static EstadoRepoImpl EST = new EstadoRepoImpl();
 	private final static UsuarioRepoImpl USR = new UsuarioRepoImpl();
 	private final static MonedaRepoImpl MON = new MonedaRepoImpl();
+	private final static CampanaRepoImpl CAMP = new CampanaRepoImpl();
 	
 	public ControladorParametros() {
 	}
@@ -273,14 +275,128 @@ public class ControladorParametros {
 						boolean inactivo = verificarEstadoInactivo(userEnable.get("USER").getId_estado());
 						
 						if(inactivo) {
-							
+							ControladorDonador.accionesDeposito(userEnable.get("USER").getIdentificacion());
 						}else {
-							
+							boolean conf = true;
+							do {
+								System.out.println("Menú Donante\n"
+										+ "1 -> Opciones de deposito\n"
+										+ "2 -> Opciones de campaña\n"
+										+ "3 -> Solicitar reporte donación\n"
+										+ "4 -> Reversar dinero de mis fondos\n"
+										+ "5 -> Cerrar Sesión");
+								System.out.print("Ingrese el numero de la opcion deseada: ");
+								String op = SC.nextLine().trim();
+								if(op == "") {
+									System.out.println("Ingrese una opcion...");
+								}else {
+									
+									switch (op) {
+									case "1":
+										ControladorDonador.accionesDeposito(userEnable.get("USER").getIdentificacion());
+										break;
+									case "2":
+										ControladorDonador.accionesCampaña(userEnable.get("USER").getIdentificacion());;
+										break;
+									case "3":
+										ControladorDonador.emitirDocumentoDonante(userEnable.get("USER").getIdentificacion());
+										break;
+									case "4":
+										ControladorDonador.reversarFondos(userEnable.get("USER").getIdentificacion());
+										conf = false;
+										System.out.println("Cerrando sesión, bye...");
+										break;
+									case "5":
+										System.out.println("Cerrando sesión, bye...");
+										conf = false;
+										break;
+									default:
+										System.out.println("Opcion erronea...");
+										break;
+									}
+									
+								}
+							}while(conf);
 						}
 
 				} else if (rolUser.equalsIgnoreCase("ADMINISTRADOR")) {
-					// ADMINISYTRADOR CODE HERE
-				}
+					String apellidos = userEnable.get("USER").getApellidos().toUpperCase();
+					System.out.println("\n----------- HOLA " + nameUser + " " + apellidos
+							+ " -----------");
+					
+						boolean conf = true;
+						//ControladorParametros.registrarSexo();
+						//ControladorParametros.registrarEstado();
+						//ControladorParametros.registrarRol();
+						//ControladorParametros.registrarMoneda();
+						//ControladorParametros.registrarFundacion();
+						//ControladorAdministrador.registrarCampana("87432567-2");
+						//ControladorAdministrador.reporteCampana("@@Qw)");
+						do {
+							System.out.println("\nCAMPAÑAS REGISTRADAS\n");
+						CAMP.listarTodo().stream().forEach(x -> System.out.println("CODIGO: "+x.getIdCampana()+" NOMBRE: "+x.getNombreCampana()));
+						System.out.println("**************************************");
+									
+							
+							System.out.println("Menú Administrador\n"
+									+ "******* PARAMETRIZACIÓN GENERAL ********"
+									+ "1 -> Registrar Sexo\n"
+									+ "2 -> Registrar Estado\n"
+									+ "3 -> Registrar Rol\n"
+									+ "4 -> Registrar Monedas\n"
+									+ "5 -> Registrar Fundación\n"
+									+ "******* CAMPAÑAS *********\n"
+									+ "6 -> Registrar Campaña\n"
+									+ "7 -> Generar Reporte de Campaña\n"
+									+ "0 -> Cerrar Sesión");
+							System.out.print("Ingrese el numero de la opcion deseada: ");
+							String op = SC.nextLine().trim();
+							if(op == "") {
+								System.out.println("Ingrese una opcion...");
+							}else {
+								
+								switch (op) {
+								case "1":
+									ControladorParametros.registrarSexo();
+									break;
+								case "2":
+									ControladorParametros.registrarEstado();
+									break;
+								case "3":
+									ControladorParametros.registrarRol();
+									break;
+								case "4":
+									ControladorParametros.registrarMoneda();
+									break;
+								case "5":
+									ControladorParametros.registrarFundacion();
+									break;
+								case "6":
+									ControladorAdministrador.registrarCampana(userEnable.get("USER").getFn_nit());
+									break;
+								case "7":
+									System.out.print("Ingrese el codigo de la campaña: ");
+									String opt = SC.nextLine().trim();
+									if(opt != "") {
+										ControladorAdministrador.reporteCampana(opt);
+									}else {
+										System.out.println("Ingrese una opcion valida...");
+									}
+									
+									break;
+								case "0":
+									System.out.println("Cerrando sesión, bye...");
+									conf = false;
+									break;
+								default:
+									System.out.println("Opcion erronea...");
+									break;
+								}
+								
+							}
+						}while(conf);
+					}
+				
 
 			} else {
 				confirmacionUser = true;

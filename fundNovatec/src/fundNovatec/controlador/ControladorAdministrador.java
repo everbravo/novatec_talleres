@@ -54,19 +54,40 @@ public class ControladorAdministrador {
 		
 		System.out.println("PARAMETROS INICIALES");
 		System.out.println("Ingrese la cantidad maxima de donadores par esta campaña: ");
-		Integer cantDon = Integer.parseInt(SC.nextLine().trim());
+		String tempG = SC.nextLine().trim();
+		Integer cantDon = null;
+		if (tempG != "") {
+			cantDon = Integer.parseInt(tempG);
+		}
+		
 		
 		System.out.println("Ingrese la cantidad maxima de donaciones permitidas para esta campaña: ");
-		Integer cantDonaciones = Integer.parseInt(SC.nextLine().trim());
+		String temp1 = SC.nextLine().trim();
+		Integer cantDonaciones = null;
+		if (temp1 != "") {
+			cantDonaciones = Integer.parseInt(temp1);
+		}
 		
 		System.out.println("Ingrese la cantidad maximo de dinero aportado por donadores a esta campaña: ");
-		Double cantMaxDona = Double.valueOf(SC.nextLine().trim());
-		
+		String temp2 = SC.nextLine().trim();
+		Double cantMaxDona = null;
+		if (temp2 != "") {
+			cantMaxDona = Double.valueOf(temp2);
+		}
+	
 		System.out.println("Ingrese el minimo de dinero estimado a recaudo: ");
-		Double montoMinimo = Double.valueOf(SC.nextLine().trim());
+		String temp3 = SC.nextLine().trim();
+		Double montoMinimo = null;
+		if (temp3 != "") {
+			montoMinimo = Double.valueOf(temp3);
+		}
 		
 		System.out.println("Ingrese el porcentaje inicial para gastos administrativos: ");
-		float porcentaje = Float.parseFloat((SC.nextLine().trim()));
+		String temp4 = SC.nextLine().trim();
+		Float porcentaje = null;
+		if (temp4 != "") {
+			porcentaje = Float.parseFloat(temp4);
+		}
 		
 		System.out.println("CRONOGRAMA");
 		System.out.println("Ingrese la fecha programada de inicio (yyyy/MM/dd): ");
@@ -89,25 +110,22 @@ public class ControladorAdministrador {
 		camp.setEstado_id(esatdo_id);
 		
 		
-		ParametrosCampanaDTO param = new ParametrosCampanaDTO();
-		param.setCampanaId(camp.getIdCampana());
-		param.setCantDonadores(cantDon);
-		param.setCantDonacionesPermit(cantDonaciones);
-		param.setCantMaxDonador(cantMaxDona);
-		param.setCantMin(montoMinimo);
-		param.setPorcentaje(porcentaje);
-		
-		CronogramaDTO crono = new CronogramaDTO();
-		crono.setCampanaId(camp.getIdCampana());
-		crono.setFechaFin(Date.valueOf(fechaFin));
-		crono.setFechaInicio(Date.valueOf(fechaIni));
-		
-		
 		if(idcampana == "" || nombre == "" || obj == "" || cantDon == null 
 				|| cantDonaciones == null || cantMaxDona == null || fechaFin == null || fechaIni == null) {
 			System.out.println("Todos los campos consultados son requeridos por el proceso, ingreselos nuevamente...");
-			registrarCampana(fundId);
 		}else {
+			ParametrosCampanaDTO param = new ParametrosCampanaDTO();
+			param.setCampanaId(camp.getIdCampana());
+			param.setCantDonadores(cantDon);
+			param.setCantDonacionesPermit(cantDonaciones);
+			param.setCantMaxDonador(cantMaxDona);
+			param.setCantMin(montoMinimo);
+			param.setPorcentaje(porcentaje);
+			
+			CronogramaDTO crono = new CronogramaDTO();
+			crono.setCampanaId(camp.getIdCampana());
+			crono.setFechaFin(Date.valueOf(fechaFin));
+			crono.setFechaInicio(Date.valueOf(fechaIni));
 			
 			boolean registro = CAMP.agregar(camp);
 			if(registro) {
@@ -139,7 +157,7 @@ public class ControladorAdministrador {
 			ParametrosCampanaDTO params = PARAM.obtenerPorCampana(campana.getIdCampana());
 			CronogramaDTO cronog = CRON.obtenerPorCampana(campana.getIdCampana());
 			//info de la campaña
-			System.out.println("INFORMACION GENERAL DE CAMPAÑA COD |"+idCamp+"|");
+			System.out.println("\n\nINFORMACION GENERAL DE CAMPAÑA COD |"+idCamp+"|");
 			System.out.println("Nombre: "+campana.getNombreCampana()+"\n"
 					+ "Objetivo: "+campana.getObjetivoCampana()+"\n"
 							+ "Estado: "+EST.buscarPorId(campana.getEstado_id()).getDescripcion()+"\t"
@@ -177,7 +195,7 @@ public class ControladorAdministrador {
 		Double total = Math.round((recaudo * porcentaje) * 100.0)/100.0;
 		System.out.println("El total de dinero recaudado durante la campaña fue de: $ "+recaudo+" COP");
 		System.out.println("El porcentaje administrativo (variacional) aplicado es: "+porcentaje+"% o ["+porcentaje*100+"%]");
-		System.out.println("El gasto ADMINISTRATIVO recaudado para la campaña es de: $ "+total+" COP");
+		System.out.println("El gasto ADMINISTRATIVO recaudado para la campaña es de: $ "+total+" COP\n\n");
 	}
 	
 	public static void asociarMonedas(String camp) {
