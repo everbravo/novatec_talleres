@@ -1,7 +1,7 @@
 'use=strict;'
 const divPadre = document.querySelector('div');
 
-const fichasPW = ["TCA","C","A","R","RR","A","C","T"];
+const fichasPW = new Array ("T","C","A","R","RR","A","C","T");
 
 const tablero = document.createElement('table');
 
@@ -15,15 +15,25 @@ for (var x = 0; x < 8; x++){
 
         let res = (x+y)%2;
         if(res === 0){
-            columna.setAttribute('class', 'white red');
+            columna.setAttribute('class', 'white');
+            columna.setAttribute('style', 'color:black; width: 2em; height:2em;');
             fila.appendChild(columna);
         }else{
             columna.setAttribute('class', 'black');
+            columna.setAttribute('style', 'color:white; width: 2em; height:2em;');
             fila.appendChild(columna);
         }
 
-        if(x===0){
-            fichasPW.forEach(valor => columna.innerText = valor);
+        if(x==0){
+            columna.innerText = fichasPW[y];
+        }else if(x==1){
+            columna.innerText = 'P';
+        }
+
+        if(x==7){
+            columna.innerText = fichasPW[y];
+        }else if(x==6){
+            columna.innerText = 'P';
         }
 
     }
