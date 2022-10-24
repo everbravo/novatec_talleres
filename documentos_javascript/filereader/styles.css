@@ -1,0 +1,35 @@
+body{
+    background-color: rgb(241, 241, 206);
+}
+table, td, th {
+    border:1px solid black;
+}
+table {
+    border-collapse:collapse;
+    width:100%;
+}
+td, th {
+    padding:5px;
+}
+thead {
+    color:navy;
+}
+tbody {
+    color:green;
+}
+label{
+    color: blue;
+}
+input{
+    color: green;
+    padding: 0em 0em 0em 1em;
+}
+select{
+    color: green;
+}
+button{
+    border-radius: 20px;
+    border-color: transparent;
+    color: white;
+    background-color: darkgoldenrod;
+}

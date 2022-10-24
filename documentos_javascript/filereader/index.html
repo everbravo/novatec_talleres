@@ -1,0 +1,83 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="styles.css">
+
+    <title>Actividad Generar csv</title>
+</head>
+<body>
+
+    <!--Formulario de datos-->
+    <center>
+        <label for="nombre">
+            Nombre:
+        </label>
+        <input type="text" name="nombre" id="nombre" required>
+
+        <label for="apellidos">
+            Apellidos:
+        </label>
+        <input type="text" name="apellidos" id="apellidos" required>
+
+        <br><br>
+        <label for="mail">
+            E-mail:
+        </label>
+        <input type="email" name="mail" id="mail" required>
+
+        <label for="fnac">
+            Fecha de nacimiento:
+        </label>
+        <input type="date" name="fnac" id="fnac" required>
+
+        <br><br>
+        <label for="ident">
+            Identificación:
+        </label>
+        <input type="number" name="ident" id="ident" required>
+
+        <label for="nac">
+            Nacionalidad:
+        </label>
+        <select name="nac" id="nac" required>
+            <option value="">Seleccione una...</option>
+            <option value="Colombiana">Colombiana</option>
+            <option value="Peruana">Peruana</option>
+            <option value="Marciana">Marciana</option>
+        </select>
+
+        <br><br>
+        <label for="sex">
+            Sexo:
+        </label>
+        <select name="sex" id="sex" required>
+            <option value="">Seleccione uno...</option>
+            <option value="M">Masculino</option>
+            <option value="F">Femenino</option>
+        </select>
+
+        <label for="ocup">
+            Ocupación:
+        </label>
+        <select name="ocup" id="ocup" required>
+            <option value="">Seleccione una...</option>
+            <option value="E">Empleado</option>
+            <option value="D">Desempleado</option>
+            <option value="I">Independiente</option>
+        </select>
+
+        <br><br>
+        <button onclick="obtenerDatos();">Agregar a tabla</button>
+    </center>
+
+    <hr>
+    <!--Tabla de datos-->
+    <div id="content"></div>
+    <br><br>
+    <div id="btns"></div>
+
+</body>
+<script src="script.js"></script>
+</html>
