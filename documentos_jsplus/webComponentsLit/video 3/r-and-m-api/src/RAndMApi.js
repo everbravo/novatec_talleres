@@ -20,6 +20,7 @@ export class RAndMApi extends LitElement {
     this.wiki = [];
     this.title = 'Hola';
     this.addEventListener('ApiData', (e)=>{
+      console.log(e.detail.data.results);
       this._dataFormat(e.detail.data);
     });
   }
